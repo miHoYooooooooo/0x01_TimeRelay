@@ -37,16 +37,16 @@ pico_sdk_init()
 # 头文件路径
 include_directories(./code/user)
 include_directories(./code/hardware)
-include_directories(./code/lib/lvgl-8.3.11/examples/porting)
+include_directories(./code/lib/lvgl-9.4.0/examples/porting)
 # include_directories(./code/ui)
 
 # 源文件路径
 aux_source_directory(./code/user                                SRC_DIR)
 aux_source_directory(./code/hardware                            SRC_DIR)
-aux_source_directory(./code/lib/lvgl-8.3.11/examples/porting    SRC_DIR)
+aux_source_directory(./code/lib/lvgl-9.4.0/examples/porting     SRC_DIR)
 
 # 添加子目录
-add_subdirectory(./code/lib/lvgl-8.3.11)
+add_subdirectory(./code/lib/lvgl-9.4.0)
 add_subdirectory(./code/ui)
 
 # 生成可执行文件

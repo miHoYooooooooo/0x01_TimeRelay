@@ -12,7 +12,7 @@
 #include "pico/stdlib.h"
 #include "lvgl.h"
 #include "lv_port_disp.h"
-#include "ui.h"
+#include "gg_utils.h"
 #include "Bsp_Clock.h"
 #include "Bsp_Led.h"
 #include "Bsp_SysTick.h"
@@ -39,6 +39,8 @@
 *****************************************************/
 int main()
 {
+    gg_ui_t guider_ui;
+
     /* 时钟初始化 */
     Clock_Init();
     /* SysTick初始化 */
@@ -59,7 +61,7 @@ int main()
     lv_init();
     lv_port_disp_init();
 
-    ui_init();
+    setup_ui(&guider_ui);
 
     /* 使能背光，开始显示 */
     ST7789_EnableBacklight();
