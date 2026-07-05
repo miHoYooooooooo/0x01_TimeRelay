@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/4
+ * Generated on    : 2026/7/5
  * ------------------------------------------------------------------------------
  */
 
@@ -45,13 +45,18 @@ typedef struct {
 
 typedef struct {
     lv_obj_t * screen;
-} gg_screen_1_t;
+    lv_obj_t * label_state;
+    lv_obj_t * spinbox_off_time;
+    lv_obj_t * spinbox_on_time;
+    lv_obj_t * textarea_off_unit;
+    lv_obj_t * textarea_on_unit;
+} gg_screen_main_t;
 
 typedef struct {
     gg_layer_sys_t layer_sys;
     gg_layer_top_t layer_top;
     gg_layer_bottom_t layer_bottom;
-    gg_screen_1_t screen_1;
+    gg_screen_main_t screen_main;
 } gg_ui_t;
 
 typedef struct {
@@ -68,7 +73,7 @@ extern gg_ui_t guider_ui;
 void setup_layer_sys(gg_ui_t * ui);
 void setup_layer_top(gg_ui_t * ui);
 void setup_layer_bottom(gg_ui_t * ui);
-void setup_screen_1(gg_ui_t * ui);
+void setup_screen_main(gg_ui_t * ui);
 
 #ifdef __cplusplus
 }

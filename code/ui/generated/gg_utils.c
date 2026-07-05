@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/4
+ * Generated on    : 2026/7/5
  * ------------------------------------------------------------------------------
  */
 
@@ -29,10 +29,10 @@ void setup_ui(gg_ui_t * ui)
     setup_layer_sys(ui);
     setup_layer_top(ui);
     setup_layer_bottom(ui);
-    setup_screen_1(ui);
+    setup_screen_main(ui);
 
     // Load active screen
-    lv_screen_load(ui->screen_1.screen);
+    lv_screen_load(ui->screen_main.screen);
 }
 
 static void gg_screen_deleted_cb(lv_event_t * e)

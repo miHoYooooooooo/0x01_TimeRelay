@@ -12,11 +12,12 @@
 #include "pico/stdlib.h"
 #include "lvgl.h"
 #include "lv_port_disp.h"
+#include "lv_port_indev.h"
 #include "gg_utils.h"
+#include "custom.h"
 #include "Bsp_Clock.h"
 #include "Bsp_Led.h"
 #include "Bsp_SysTick.h"
-#include "Bsp_ST7789.h"
 
 /****************************************************
                         宏定义
@@ -51,20 +52,16 @@ int main()
     /* LED初始化 */
     Led_Init();
 
-    /* ST7789初始化 */
-    ST7789_Init();
-
     /* 打印时钟信息 */
     Clock_PrintFreq();
 
     /* lvgl初始化 */
     lv_init();
     lv_port_disp_init();
+    lv_port_indev_init();
 
     setup_ui(&guider_ui);
-
-    /* 使能背光，开始显示 */
-    ST7789_EnableBacklight();
+    custom_init(&guider_ui);
 
     while (TRUE)
     {
