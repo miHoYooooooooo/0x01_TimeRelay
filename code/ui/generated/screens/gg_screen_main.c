@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/5
+ * Generated on    : 2026/7/6
  * ------------------------------------------------------------------------------
  */
 
@@ -35,128 +35,120 @@ void setup_screen_main(gg_ui_t * ui)
     lv_obj_set_height(ui->screen_main.screen, 240);
 
     // Style: ui->screen_main.screen [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_bg_color(ui->screen_main.screen, lv_color_hex(0x242424), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->screen_main.screen, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Create textarea: ui->screen_main.textarea_on_unit
-    ui->screen_main.textarea_on_unit = lv_textarea_create(ui->screen_main.screen);
-    lv_obj_set_width(ui->screen_main.textarea_on_unit, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui->screen_main.textarea_on_unit, LV_SIZE_CONTENT);
-    lv_obj_set_align(ui->screen_main.textarea_on_unit, LV_ALIGN_TOP_LEFT);
-    lv_obj_set_x(ui->screen_main.textarea_on_unit, 177);
-    lv_obj_set_y(ui->screen_main.textarea_on_unit, 53);
-    lv_obj_set_scrollbar_mode(ui->screen_main.textarea_on_unit, LV_SCROLLBAR_MODE_OFF);
-    lv_textarea_set_text(ui->screen_main.textarea_on_unit, "S");
-    lv_textarea_set_one_line(ui->screen_main.textarea_on_unit, true);
-    lv_textarea_set_align(ui->screen_main.textarea_on_unit, LV_TEXT_ALIGN_CENTER);
+    // Create label: ui->screen_main.label_main
+    ui->screen_main.label_main = lv_label_create(ui->screen_main.screen);
+    lv_obj_set_width(ui->screen_main.label_main, 234);
+    lv_obj_set_height(ui->screen_main.label_main, 234);
+    lv_obj_set_align(ui->screen_main.label_main, LV_ALIGN_TOP_LEFT);
+    lv_obj_set_x(ui->screen_main.label_main, 3);
+    lv_obj_set_y(ui->screen_main.label_main, 3);
+    lv_label_set_text(ui->screen_main.label_main, "");
 
-    // Style: ui->screen_main.textarea_on_unit [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_bg_color(ui->screen_main.textarea_on_unit, lv_color_hex(0x2f2f2f), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_main.textarea_on_unit, &lv_font_montserratMedium_45,
+    // Style: ui->screen_main.label_main [LV_PART_MAIN|LV_STATE_DEFAULT]
+    lv_obj_set_style_border_color(ui->screen_main.label_main, lv_color_hex(0x3C4850), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->screen_main.label_main, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_main.label_main, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Create spinbox: ui->screen_main.spinbox_time_on
+    ui->screen_main.spinbox_time_on = lv_spinbox_create(ui->screen_main.screen);
+    lv_obj_set_width(ui->screen_main.spinbox_time_on, 100);
+    lv_obj_set_height(ui->screen_main.spinbox_time_on, 64);
+    lv_obj_set_align(ui->screen_main.spinbox_time_on, LV_ALIGN_CENTER);
+    lv_obj_set_x(ui->screen_main.spinbox_time_on, 0);
+    lv_obj_set_y(ui->screen_main.spinbox_time_on, -32);
+    lv_spinbox_set_value(ui->screen_main.spinbox_time_on, 12);
+    lv_spinbox_set_rollover(ui->screen_main.spinbox_time_on, false);
+    lv_spinbox_set_digit_count(ui->screen_main.spinbox_time_on, 3);
+    lv_spinbox_set_range(ui->screen_main.spinbox_time_on, 0, 999);
+
+    // Style: ui->screen_main.spinbox_time_on [LV_PART_MAIN|LV_STATE_DEFAULT]
+    lv_obj_set_style_bg_color(ui->screen_main.spinbox_time_on, lv_color_hex(0x03090B), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->screen_main.spinbox_time_on, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_main.spinbox_time_on, &lv_font_LiberationSans_50,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(ui->screen_main.textarea_on_unit, lv_color_hex(0xff0101), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_color(ui->screen_main.textarea_on_unit, lv_color_hex(0xffffff),
+    lv_obj_set_style_radius(ui->screen_main.spinbox_time_on, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(ui->screen_main.spinbox_time_on, lv_color_hex(0x273039), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_opa(ui->screen_main.spinbox_time_on, 229, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->screen_main.spinbox_time_on, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->screen_main.spinbox_time_on, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->screen_main.spinbox_time_on, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->screen_main.spinbox_time_on, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->screen_main.spinbox_time_on, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->screen_main.spinbox_time_on, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Style: ui->screen_main.spinbox_time_on [LV_PART_CURSOR|LV_STATE_DEFAULT]
+    lv_obj_set_style_bg_opa(ui->screen_main.spinbox_time_on, 0, LV_PART_CURSOR | LV_STATE_DEFAULT);
+
+    // Create spinbox: ui->screen_main.spinbox_time_off
+    ui->screen_main.spinbox_time_off = lv_spinbox_create(ui->screen_main.screen);
+    lv_obj_set_width(ui->screen_main.spinbox_time_off, 100);
+    lv_obj_set_height(ui->screen_main.spinbox_time_off, 64);
+    lv_obj_set_align(ui->screen_main.spinbox_time_off, LV_ALIGN_CENTER);
+    lv_obj_set_x(ui->screen_main.spinbox_time_off, 0);
+    lv_obj_set_y(ui->screen_main.spinbox_time_off, 40);
+    lv_spinbox_set_value(ui->screen_main.spinbox_time_off, 12);
+    lv_spinbox_set_rollover(ui->screen_main.spinbox_time_off, false);
+    lv_spinbox_set_digit_count(ui->screen_main.spinbox_time_off, 3);
+    lv_spinbox_set_range(ui->screen_main.spinbox_time_off, 0, 999);
+
+    // Style: ui->screen_main.spinbox_time_off [LV_PART_MAIN|LV_STATE_DEFAULT]
+    lv_obj_set_style_bg_color(ui->screen_main.spinbox_time_off, lv_color_hex(0x03090B), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->screen_main.spinbox_time_off, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_main.spinbox_time_off, &lv_font_LiberationSans_50,
+                               LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_main.spinbox_time_off, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(ui->screen_main.spinbox_time_off, lv_color_hex(0x273039),
                                   LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_opa(ui->screen_main.textarea_on_unit, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_opa(ui->screen_main.spinbox_time_off, 229, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->screen_main.spinbox_time_off, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->screen_main.spinbox_time_off, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->screen_main.spinbox_time_off, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->screen_main.spinbox_time_off, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->screen_main.spinbox_time_off, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->screen_main.spinbox_time_off, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Create textarea: ui->screen_main.textarea_off_unit
-    ui->screen_main.textarea_off_unit = lv_textarea_create(ui->screen_main.screen);
-    lv_obj_set_width(ui->screen_main.textarea_off_unit, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui->screen_main.textarea_off_unit, LV_SIZE_CONTENT);
-    lv_obj_set_align(ui->screen_main.textarea_off_unit, LV_ALIGN_TOP_LEFT);
-    lv_obj_set_x(ui->screen_main.textarea_off_unit, 177);
-    lv_obj_set_y(ui->screen_main.textarea_off_unit, 151);
-    lv_obj_set_scrollbar_mode(ui->screen_main.textarea_off_unit, LV_SCROLLBAR_MODE_OFF);
-    lv_textarea_set_text(ui->screen_main.textarea_off_unit, "S");
-    lv_textarea_set_one_line(ui->screen_main.textarea_off_unit, true);
-    lv_textarea_set_align(ui->screen_main.textarea_off_unit, LV_TEXT_ALIGN_CENTER);
+    // Style: ui->screen_main.spinbox_time_off [LV_PART_CURSOR|LV_STATE_DEFAULT]
+    lv_obj_set_style_bg_opa(ui->screen_main.spinbox_time_off, 0, LV_PART_CURSOR | LV_STATE_DEFAULT);
 
-    // Style: ui->screen_main.textarea_off_unit [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_bg_color(ui->screen_main.textarea_off_unit, lv_color_hex(0x2f2f2f), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_main.textarea_off_unit, &lv_font_montserratMedium_45,
+    // Create button: ui->screen_main.button_run
+    ui->screen_main.button_run = lv_button_create(ui->screen_main.screen);
+    lv_obj_set_width(ui->screen_main.button_run, 224);
+    lv_obj_set_height(ui->screen_main.button_run, 30);
+    lv_obj_set_align(ui->screen_main.button_run, LV_ALIGN_TOP_LEFT);
+    lv_obj_set_x(ui->screen_main.button_run, 8);
+    lv_obj_set_y(ui->screen_main.button_run, 202);
+
+    // Style: ui->screen_main.button_run [LV_PART_MAIN|LV_STATE_DEFAULT]
+    lv_obj_set_style_border_color(ui->screen_main.button_run, lv_color_hex(0x20DB42), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->screen_main.button_run, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_color(ui->screen_main.button_run, lv_color_hex(0x17B838), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->screen_main.button_run, lv_color_hex(0x063F15), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->screen_main.button_run, LV_GRAD_DIR_HOR, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_main_stop(ui->screen_main.button_run, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_stop(ui->screen_main.button_run, 128, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->screen_main.button_run, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Style: ui->screen_main.button_run [LV_PART_MAIN|LV_STATE_FOCUSED]
+    lv_obj_set_style_border_width(ui->screen_main.button_run, 3, LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Style: ui->screen_main.button_run [LV_PART_MAIN|LV_STATE_FOCUS_KEY]
+    lv_obj_set_style_outline_opa(ui->screen_main.button_run, 0, LV_PART_MAIN | LV_STATE_FOCUS_KEY);
+
+    // Create label: ui->screen_main.button_run_button_1_label
+    ui->screen_main.button_run_button_1_label = lv_label_create(ui->screen_main.button_run);
+    lv_obj_set_width(ui->screen_main.button_run_button_1_label, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui->screen_main.button_run_button_1_label, LV_SIZE_CONTENT);
+    lv_obj_set_align(ui->screen_main.button_run_button_1_label, LV_ALIGN_CENTER);
+    lv_obj_set_x(ui->screen_main.button_run_button_1_label, 0);
+    lv_obj_set_y(ui->screen_main.button_run_button_1_label, 0);
+
+    // Style: ui->screen_main.button_run_button_1_label [LV_PART_MAIN|LV_STATE_DEFAULT]
+    lv_obj_set_style_text_font(ui->screen_main.button_run_button_1_label, &lv_font_FontAwesome7_20,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(ui->screen_main.textarea_off_unit, lv_color_hex(0xff0101), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_color(ui->screen_main.textarea_off_unit, lv_color_hex(0xffffff),
-                                  LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_opa(ui->screen_main.textarea_off_unit, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Create spinbox: ui->screen_main.spinbox_on_time
-    ui->screen_main.spinbox_on_time = lv_spinbox_create(ui->screen_main.screen);
-    lv_obj_set_width(ui->screen_main.spinbox_on_time, 100);
-    lv_obj_set_height(ui->screen_main.spinbox_on_time, LV_SIZE_CONTENT);
-    lv_obj_set_align(ui->screen_main.spinbox_on_time, LV_ALIGN_CENTER);
-    lv_obj_set_x(ui->screen_main.spinbox_on_time, 0);
-    lv_obj_set_y(ui->screen_main.spinbox_on_time, -29);
-    lv_spinbox_set_value(ui->screen_main.spinbox_on_time, 11);
-    lv_spinbox_set_rollover(ui->screen_main.spinbox_on_time, true);
-    lv_spinbox_set_digit_count(ui->screen_main.spinbox_on_time, 3);
-    lv_spinbox_set_range(ui->screen_main.spinbox_on_time, 0, 999);
-    lv_spinbox_set_cursor_pos(ui->screen_main.spinbox_on_time, 0);
-
-    // Style: ui->screen_main.spinbox_on_time [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_text_font(ui->screen_main.spinbox_on_time, &lv_font_LiberationSans_44,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(ui->screen_main.spinbox_on_time, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui->screen_main.spinbox_on_time, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Style: ui->screen_main.spinbox_on_time [LV_PART_MAIN|LV_STATE_FOCUS_KEY]
-    lv_obj_set_style_border_color(ui->screen_main.spinbox_on_time, lv_color_hex(0xff0101),
-                                  LV_PART_MAIN | LV_STATE_FOCUS_KEY);
-    lv_obj_set_style_border_width(ui->screen_main.spinbox_on_time, 5, LV_PART_MAIN | LV_STATE_FOCUS_KEY);
-
-    // Style: ui->screen_main.spinbox_on_time [LV_PART_CURSOR|LV_STATE_DEFAULT]
-    lv_obj_set_style_pad_bottom(ui->screen_main.spinbox_on_time, -1, LV_PART_CURSOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->screen_main.spinbox_on_time, lv_color_hex(0x000000), LV_PART_CURSOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(ui->screen_main.spinbox_on_time, lv_color_hex(0xffffff), LV_PART_CURSOR | LV_STATE_DEFAULT);
-
-    // Create spinbox: ui->screen_main.spinbox_off_time
-    ui->screen_main.spinbox_off_time = lv_spinbox_create(ui->screen_main.screen);
-    lv_obj_set_width(ui->screen_main.spinbox_off_time, 100);
-    lv_obj_set_height(ui->screen_main.spinbox_off_time, LV_SIZE_CONTENT);
-    lv_obj_set_align(ui->screen_main.spinbox_off_time, LV_ALIGN_CENTER);
-    lv_obj_set_x(ui->screen_main.spinbox_off_time, -1);
-    lv_obj_set_y(ui->screen_main.spinbox_off_time, 69);
-    lv_spinbox_set_value(ui->screen_main.spinbox_off_time, 0);
-    lv_spinbox_set_rollover(ui->screen_main.spinbox_off_time, true);
-    lv_spinbox_set_digit_count(ui->screen_main.spinbox_off_time, 3);
-    lv_spinbox_set_range(ui->screen_main.spinbox_off_time, 0, 999);
-    lv_spinbox_set_cursor_pos(ui->screen_main.spinbox_off_time, 0);
-
-    // Style: ui->screen_main.spinbox_off_time [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_text_font(ui->screen_main.spinbox_off_time, &lv_font_LiberationSans_44,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(ui->screen_main.spinbox_off_time, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui->screen_main.spinbox_off_time, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Style: ui->screen_main.spinbox_off_time [LV_PART_MAIN|LV_STATE_FOCUS_KEY]
-    lv_obj_set_style_border_color(ui->screen_main.spinbox_off_time, lv_color_hex(0xff0101),
-                                  LV_PART_MAIN | LV_STATE_FOCUS_KEY);
-    lv_obj_set_style_border_width(ui->screen_main.spinbox_off_time, 5, LV_PART_MAIN | LV_STATE_FOCUS_KEY);
-
-    // Style: ui->screen_main.spinbox_off_time [LV_PART_CURSOR|LV_STATE_DEFAULT]
-    lv_obj_set_style_pad_bottom(ui->screen_main.spinbox_off_time, -1, LV_PART_CURSOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->screen_main.spinbox_off_time, lv_color_hex(0xffffff), LV_PART_CURSOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(ui->screen_main.spinbox_off_time, lv_color_hex(0x000000),
-                                LV_PART_CURSOR | LV_STATE_DEFAULT);
-
-    // Create label: ui->screen_main.label_state
-    ui->screen_main.label_state = lv_label_create(ui->screen_main.screen);
-    lv_obj_set_width(ui->screen_main.label_state, 60);
-    lv_obj_set_height(ui->screen_main.label_state, 30);
-    lv_obj_set_align(ui->screen_main.label_state, LV_ALIGN_TOP_LEFT);
-    lv_obj_set_x(ui->screen_main.label_state, 9);
-    lv_obj_set_y(ui->screen_main.label_state, 10);
-    lv_label_set_text(ui->screen_main.label_state, "OFF");
-
-    // Style: ui->screen_main.label_state [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_bg_color(ui->screen_main.label_state, lv_color_hex(0xff0101), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_main.label_state, &lv_font_arial_20, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(ui->screen_main.label_state, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui->screen_main.label_state, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_bottom(ui->screen_main.label_state, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui->screen_main.label_state, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_left(ui->screen_main.label_state, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(ui->screen_main.label_state, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui->screen_main.label_state, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->screen_main.button_run_button_1_label, LV_TEXT_ALIGN_CENTER,
+                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // screen_main custom code
 

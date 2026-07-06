@@ -17,69 +17,16 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/5
+ * Generated on    : 2026/7/6
  * ------------------------------------------------------------------------------
  */
 
 #include "gg_event.h"
 #include "custom.h"
 
-static void textarea_on_unit_event_handler(lv_event_t * e)
-{
-    gg_ui_t * ui = lv_event_get_user_data(e);
-
-    lv_event_code_t code = lv_event_get_code(e);
-
-    switch(code) {
-
-        default:
-            break;
-    }
-}
-
-static void screen_event_handler(lv_event_t * e)
-{
-    gg_ui_t * ui = lv_event_get_user_data(e);
-
-    lv_event_code_t code = lv_event_get_code(e);
-
-    switch(code) {
-
-        default:
-            break;
-    }
-}
-
-static void label_state_event_handler(lv_event_t * e)
-{
-    gg_ui_t * ui = lv_event_get_user_data(e);
-
-    lv_event_code_t code = lv_event_get_code(e);
-
-    switch(code) {
-
-        default:
-            break;
-    }
-}
-
-static void spinbox_on_time_event_handler(lv_event_t * e)
-{
-    gg_ui_t * ui = lv_event_get_user_data(e);
-
-    lv_event_code_t code = lv_event_get_code(e);
-
-    switch(code) {
-
-        default:
-            break;
-    }
-}
+// No event handlers
 
 void gg_event_init_screen_main(gg_ui_t * ui)
 {
-    lv_obj_add_event_cb(ui->screen_main.textarea_on_unit, textarea_on_unit_event_handler, LV_EVENT_ALL, ui);
-    lv_obj_add_event_cb(ui->screen_main.screen, screen_event_handler, LV_EVENT_ALL, ui);
-    lv_obj_add_event_cb(ui->screen_main.label_state, label_state_event_handler, LV_EVENT_ALL, ui);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_on_time, spinbox_on_time_event_handler, LV_EVENT_ALL, ui);
+    // No event callbacks
 }

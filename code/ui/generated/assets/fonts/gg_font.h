@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/5
+ * Generated on    : 2026/7/6
  * ------------------------------------------------------------------------------
  */
 
@@ -29,9 +29,8 @@ extern "C" {
 
 #include "lvgl.h"
 
-LV_FONT_DECLARE(lv_font_arial_20);
-LV_FONT_DECLARE(lv_font_LiberationSans_44);
-LV_FONT_DECLARE(lv_font_montserratMedium_45);
+LV_FONT_DECLARE(lv_font_FontAwesome7_20);
+LV_FONT_DECLARE(lv_font_LiberationSans_50);
 
 #ifdef __cplusplus
 }
