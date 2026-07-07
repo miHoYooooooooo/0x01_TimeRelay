@@ -12,7 +12,7 @@
  * Conversion Tool : GUI Guider
  * Vendor          : NXP Semiconductors
  * Version         : 2.0.0
- * Generated on    : 2026/7/6
+ * Generated on    : 2026/7/7
  * Purpose         : Convert font file into C source code for embedded GUI usage.
  *
  * Disclaimer:

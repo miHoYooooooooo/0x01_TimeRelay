@@ -156,71 +156,71 @@ static void software_init(void)
     st7789_write_cmd(0x3A);
     st7789_write_data_byte(0x05);
 
-    /* 调节屏幕扫描的时序参数 */
-    st7789_write_cmd(0xB2);
-    st7789_write_data_byte(0x0C);
-    st7789_write_data_byte(0x0C);
-    st7789_write_data_byte(0x00);
-    st7789_write_data_byte(0x33);
-    st7789_write_data_byte(0x33);
+    // /* 调节屏幕扫描的时序参数 */
+    // st7789_write_cmd(0xB2);
+    // st7789_write_data_byte(0x0C);
+    // st7789_write_data_byte(0x0C);
+    // st7789_write_data_byte(0x00);
+    // st7789_write_data_byte(0x33);
+    // st7789_write_data_byte(0x33);
 
-    /* 设置Gate(行驱动)控制 */
-    st7789_write_cmd(0xB7);
-    st7789_write_data_byte(0x35);
-    /* 设置VCOM电压(液晶共模电压) */
-    st7789_write_cmd(0xBB);
-    st7789_write_data_byte(0x19);
-    /* 设置内部电压转换器输出 */
-    st7789_write_cmd(0xC0);
-    st7789_write_data_byte(0x2C);
-    /* 启用VDV(电压增益)和VRH(参考电压) */
-    st7789_write_cmd(0xC2);
-    st7789_write_data_byte(0x01);
-    /* 设置VRH(电压参考级别) */
-    st7789_write_cmd(0xC3);
-    st7789_write_data_byte(0x12);
-    /* 设置VDV(电压偏移量) */
-    st7789_write_cmd(0xC4);
-    st7789_write_data_byte(0x20);
-    /* 设置帧率(60Hz) */
-    st7789_write_cmd(0xC6);
-    st7789_write_data_byte(0x0F);
-    /* 设置第二组电源控制参数 */
-    st7789_write_cmd(0xD0);
-    st7789_write_data_byte(0xA4);
-    st7789_write_data_byte(0xA1);
-    /* 设置Gamma曲线 */
-    st7789_write_cmd(0xE0);
-    st7789_write_data_byte(0xD0);
-    st7789_write_data_byte(0x04);
-    st7789_write_data_byte(0x0D);
-    st7789_write_data_byte(0x11);
-    st7789_write_data_byte(0x13);
-    st7789_write_data_byte(0x2B);
-    st7789_write_data_byte(0x3F);
-    st7789_write_data_byte(0x54);
-    st7789_write_data_byte(0x4C);
-    st7789_write_data_byte(0x18);
-    st7789_write_data_byte(0x0D);
-    st7789_write_data_byte(0x0B);
-    st7789_write_data_byte(0x1F);
-    st7789_write_data_byte(0x23);
-    /* 设置Gamma曲线 */
-    st7789_write_cmd(0xE1);
-    st7789_write_data_byte(0xD0);
-    st7789_write_data_byte(0x04);
-    st7789_write_data_byte(0x0C);
-    st7789_write_data_byte(0x11);
-    st7789_write_data_byte(0x13);
-    st7789_write_data_byte(0x2C);
-    st7789_write_data_byte(0x3F);
-    st7789_write_data_byte(0x44);
-    st7789_write_data_byte(0x51);
-    st7789_write_data_byte(0x2F);
-    st7789_write_data_byte(0x1F);
-    st7789_write_data_byte(0x1F);
-    st7789_write_data_byte(0x20);
-    st7789_write_data_byte(0x23);
+    // /* 设置Gate(行驱动)控制 */
+    // st7789_write_cmd(0xB7);
+    // st7789_write_data_byte(0x35);
+    // /* 设置VCOM电压(液晶共模电压) */
+    // st7789_write_cmd(0xBB);
+    // st7789_write_data_byte(0x19);
+    // /* 设置内部电压转换器输出 */
+    // st7789_write_cmd(0xC0);
+    // st7789_write_data_byte(0x2C);
+    // /* 启用VDV(电压增益)和VRH(参考电压) */
+    // st7789_write_cmd(0xC2);
+    // st7789_write_data_byte(0x01);
+    // /* 设置VRH(电压参考级别) */
+    // st7789_write_cmd(0xC3);
+    // st7789_write_data_byte(0x12);
+    // /* 设置VDV(电压偏移量) */
+    // st7789_write_cmd(0xC4);
+    // st7789_write_data_byte(0x20);
+    // /* 设置帧率(60Hz) */
+    // st7789_write_cmd(0xC6);
+    // st7789_write_data_byte(0x0F);
+    // /* 设置第二组电源控制参数 */
+    // st7789_write_cmd(0xD0);
+    // st7789_write_data_byte(0xA4);
+    // st7789_write_data_byte(0xA1);
+    // /* 设置Gamma曲线 */
+    // st7789_write_cmd(0xE0);
+    // st7789_write_data_byte(0xD0);
+    // st7789_write_data_byte(0x04);
+    // st7789_write_data_byte(0x0D);
+    // st7789_write_data_byte(0x11);
+    // st7789_write_data_byte(0x13);
+    // st7789_write_data_byte(0x2B);
+    // st7789_write_data_byte(0x3F);
+    // st7789_write_data_byte(0x54);
+    // st7789_write_data_byte(0x4C);
+    // st7789_write_data_byte(0x18);
+    // st7789_write_data_byte(0x0D);
+    // st7789_write_data_byte(0x0B);
+    // st7789_write_data_byte(0x1F);
+    // st7789_write_data_byte(0x23);
+    // /* 设置Gamma曲线 */
+    // st7789_write_cmd(0xE1);
+    // st7789_write_data_byte(0xD0);
+    // st7789_write_data_byte(0x04);
+    // st7789_write_data_byte(0x0C);
+    // st7789_write_data_byte(0x11);
+    // st7789_write_data_byte(0x13);
+    // st7789_write_data_byte(0x2C);
+    // st7789_write_data_byte(0x3F);
+    // st7789_write_data_byte(0x44);
+    // st7789_write_data_byte(0x51);
+    // st7789_write_data_byte(0x2F);
+    // st7789_write_data_byte(0x1F);
+    // st7789_write_data_byte(0x1F);
+    // st7789_write_data_byte(0x20);
+    // st7789_write_data_byte(0x23);
 
     /* 开启显示颜色反转 */
     st7789_write_cmd(0x21);

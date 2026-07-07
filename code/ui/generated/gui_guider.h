@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/6
+ * Generated on    : 2026/7/7
  * ------------------------------------------------------------------------------
  */
 
@@ -45,11 +45,21 @@ typedef struct {
 
 typedef struct {
     lv_obj_t * screen;
+    lv_obj_t * led_state;
+    lv_obj_t * label_state_relay;
+    lv_obj_t * label_state_run;
     lv_obj_t * button_run;
-    lv_obj_t * button_run_button_1_label;
-    lv_obj_t * spinbox_time_off;
+    lv_obj_t * button_run_button_run_text;
     lv_obj_t * spinbox_time_on;
+    lv_obj_t * spinbox_time_off;
+    lv_obj_t * roller_time_on_unit;
+    lv_obj_t * roller_time_off_unit;
+    lv_obj_t * label_time_on_text;
+    lv_obj_t * label_time_off_text;
+    lv_obj_t * label_time_on_bg;
+    lv_obj_t * label_time_off_bg;
     lv_obj_t * label_main;
+    lv_obj_t * line;
 } gg_screen_main_t;
 
 typedef struct {
