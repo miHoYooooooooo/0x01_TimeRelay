@@ -65,9 +65,11 @@ pico_enable_stdio_usb (${PROJECT_NAME} 0)
 # 链接库
 target_link_libraries(${PROJECT_NAME}
         pico_stdlib
+        pico_multicore
         lvgl
         ui
         hardware_dma
+        hardware_gpio
         hardware_spi
         hardware_pwm
     )

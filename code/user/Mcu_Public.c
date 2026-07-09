@@ -58,14 +58,7 @@ BOOL WaitForTime(UINT32 wait, UINT32 start, UINT32 end)
 {
     UINT32 diff = 0;
 
-    if (end < start)
-    {
-        diff = (0xFFFFFFFF - start) + end;
-    }
-    else
-    {
-        diff = end - start;
-    }
+    diff = DIFF(start, end);
 
     if (wait <= diff)
     {

@@ -10,9 +10,11 @@
                         头文件
 *****************************************************/
 #include "hardware/dma.h"
+#include "hardware/gpio.h"
 #include "hardware/pwm.h"
 #include "lvgl.h"
 #include "lv_port_disp.h"
+#include "Bsp_Key.h"
 #include "Bsp_Led.h"
 
 /****************************************************
@@ -79,6 +81,63 @@ void Irq_DmaHandler(void)
 
         /* lvgl刷新完成 */
         lv_disp_ready();
+    }
+}
+
+/**
+ * @brief Gpio中断回调
+ * @param[in]   void
+ * @param[out]  void
+ * @return void
+ */
+void Irq_GpioHandler(uint gpio, uint32_t events)
+{
+    BOOL     bRise = TRUE;
+    KEY_TYPE type  = KEY_TYPE_NULL;
+
+    /* 二次判断 */
+    if (GPIO_IRQ_EDGE_RISE == events)
+    {
+        if (true != gpio_get(gpio))
+        {
+            return;
+        }
+    }
+    else if (GPIO_IRQ_EDGE_FALL == events)
+    {
+        if (false != gpio_get(gpio))
+        {
+            return;
+        }
+    }
+
+    /* 获取类型 */
+    switch (gpio)
+    {
+        default:
+            break;
+
+        case BSP_KEY_UP_PIN:
+            type = KEY_TYPE_UP;
+            break;
+
+        case BSP_KEY_DOWN_PIN:
+            type = KEY_TYPE_DOWN;
+            break;
+
+        case BSP_KEY_ENTER_PIN:
+            type = KEY_TYPE_ENTER;
+            break;
+    }
+
+    /* 获取动作 */
+    if (GPIO_IRQ_EDGE_RISE == events)
+    {
+        Key_Release(type);
+    }
+    else if (GPIO_IRQ_EDGE_FALL == events)
+    {
+        Key_Press(type);
     }
 }
 

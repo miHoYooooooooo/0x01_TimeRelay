@@ -11,6 +11,7 @@
  *********************/
 #include "lv_port_indev.h"
 #include "Bsp_Key.h"
+#include "Mcu_State.h"
 
 /*********************
  *      DEFINES
@@ -312,33 +313,46 @@ static void keypad_read(lv_indev_t * indev_drv, lv_indev_data_t * data)
     // mouse_get_xy(&data->point.x, &data->point.y);
 
     /*Get whether the a key is pressed and save the pressed key*/
-    uint32_t act_key = keypad_get_key();
-    if(act_key != 0) {
+    KEY_TYPE act_key = Key_GetTypeImmediately();    //keypad_get_key();
+    if(act_key != KEY_TYPE_NULL) {
         data->state = LV_INDEV_STATE_PRESSED;
 
-        /*Translate the keys to LVGL control characters according to your key definitions*/
-        switch(act_key) {
-            case 1:
-                act_key = LV_KEY_NEXT;
-                break;
-            case 2:
-                act_key = LV_KEY_PREV;
-                break;
-            case 3:
-                act_key = LV_KEY_UP;
-                break;
-            case 4:
-                act_key = LV_KEY_DOWN;
-                break;
-            case 5:
-                act_key = LV_KEY_LEFT;
-                break;
-            case 6:
-                act_key = LV_KEY_RIGHT;
-                break;
-            case 7:
+        /* ????? */
+        if (false == State_GetEdit())
+        {
+            /* ???ENTER??????????????+-?? */
+            if (KEY_TYPE_ENTER == act_key)
+            {
                 act_key = LV_KEY_ENTER;
-                break;
+            }
+        }
+        /* ???? */
+        else
+        {
+            /*Translate the keys to LVGL control characters according to your key definitions*/
+            switch(act_key) {
+                // case 1:
+                //     act_key = LV_KEY_NEXT;
+                //     break;
+                // case 2:
+                //     act_key = LV_KEY_PREV;
+                //     break;
+                case KEY_TYPE_UP:
+                    act_key = LV_KEY_UP;
+                    break;
+                case KEY_TYPE_DOWN:
+                    act_key = LV_KEY_DOWN;
+                    break;
+                // case 5:
+                //     act_key = LV_KEY_LEFT;
+                //     break;
+                // case 6:
+                //     act_key = LV_KEY_RIGHT;
+                //     break;
+                case KEY_TYPE_ENTER:
+                    act_key = LV_KEY_ENTER;
+                    break;
+            }
         }
 
         last_key = act_key;
@@ -351,10 +365,10 @@ static void keypad_read(lv_indev_t * indev_drv, lv_indev_data_t * data)
 }
 
 /*Get the currently being pressed key.  0 if no key is pressed*/
-static uint32_t keypad_get_key(void)
-{
-    return Key_Read();
-}
+// static uint32_t keypad_get_key(void)
+// {
+
+// }
 #endif
 
 /*------------------

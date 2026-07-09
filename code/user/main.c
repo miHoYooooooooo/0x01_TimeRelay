@@ -10,6 +10,7 @@
                         头文件
 *****************************************************/
 #include "pico/stdlib.h"
+#include "pico/multicore.h"
 #include "lvgl.h"
 #include "lv_port_disp.h"
 #include "lv_port_indev.h"
@@ -30,6 +31,7 @@
 /****************************************************
                        全局变量
 *****************************************************/
+gg_ui_t guider_ui;
 
 /****************************************************
                        函数声明
@@ -38,10 +40,17 @@
 /****************************************************
                        函数定义
 *****************************************************/
+void core1_entry(void)
+{
+    while (TRUE)
+    {
+        lv_timer_handler();
+    }
+}
+
+
 int main()
 {
-    gg_ui_t guider_ui;
-
     /* 时钟初始化 */
     Clock_Init();
     /* SysTick初始化 */
@@ -63,8 +72,11 @@ int main()
     setup_ui(&guider_ui);
     custom_init(&guider_ui);
 
+    /* 启动多核 */
+    multicore_launch_core1(core1_entry);
+
     while (TRUE)
     {
-        lv_timer_handler();
+        // lv_timer_handler();
     }
 }

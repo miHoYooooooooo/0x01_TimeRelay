@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include "lvgl.h"
 #include "custom.h"
+#include "Bsp_Key.h"
+#include "Mcu_State.h"
 
 /*********************
  *      DEFINES
@@ -26,57 +28,95 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-extern lv_indev_t * indev_keypad;
+
 
 /**********************
  *  STATIC VARIABLES
  **********************/
+extern lv_indev_t *indev_keypad;
+/* 组 */
+static lv_group_t *group_main          = NULL;
+/* 定时器 */
+static lv_timer_t *timer_loop          = NULL;      /* 循环执行 */
+static lv_timer_t *timer_spinbox_blink = NULL;      /* Spinbox文字闪烁 */
+static lv_timer_t *timer_roller_blink  = NULL;      /* Roller文字闪烁 */
+static lv_timer_t *timer_quiet_edit    = NULL;      /* 退出编辑状态 */
+static lv_timer_t *timer_led_blink     = NULL;
 
-static lv_timer_t *timer_spinbox_blink = NULL;
-static lv_timer_t *timer_roller_blink  = NULL;
-
-void lable_event_cb(lv_event_t * e)
+/**********************
+ *      FUNCTION
+ **********************/
+/**
+  * @brief 循环处理回调
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+static void loop_timer_cb(lv_timer_t * t)
 {
-    lv_event_code_t event = lv_event_get_code(e);
-    lv_obj_t       *obj   = (lv_obj_t *)lv_event_get_user_data(e);
+    static bool last_edit = false;
 
-    /* 处理事件 */
-    switch (event)
+    /****** 编辑模式 ******/
+
+    if (false == State_GetEdit())
     {
-        default:
-            break;
-
-        case LV_EVENT_KEY:
-            /* 按键处理 */
-            switch (lv_indev_get_key(indev_keypad))
-            {
-                default:
-                    lv_label_set_text(obj, "KEY");
-                    break;
-            }
-            break;
-
-        /* 获得焦点事件 */
-        case LV_EVENT_FOCUSED:
-            lv_label_set_text(obj, "ON");
-            break;
-
-        /* 失去焦点事件 */
-        case LV_EVENT_DEFOCUSED:
-            lv_label_set_text(obj, "OFF");
-            break;
+        /* 判断是否长按 */
+        if ((KEY_TYPE_ENTER == Key_GetType())
+        && (3000 <= Key_GetPressedTime()))
+        {
+            State_SetEdit(true);
+        }
     }
+
+    /* 是否变更状态了 */
+    if (State_GetEdit() != last_edit)
+    {
+        /* 正在编辑 */
+        if (true == State_GetEdit())
+        {
+            /* 手动触发首个对象的焦点事件 */
+            lv_group_focus_obj(lv_group_get_obj_by_index(group_main, 0));
+
+            /* 复位定时器（编辑状态） */
+            lv_timer_reset(timer_quiet_edit);
+            /* 恢复定时器（编辑状态） */
+            lv_timer_resume(timer_quiet_edit);
+
+        }
+        /* 退出编辑 */
+        else
+        {
+            /* 手动触发当前对象的失去焦点事件 */
+            lv_obj_send_event(lv_group_get_focused(group_main), LV_EVENT_DEFOCUSED, lv_group_get_focused(group_main));
+        }
+    }
+
+    /* 更新状态 */
+    last_edit = State_GetEdit();
 }
 
-
-
 /**
-  * @brief Spinbox定时器（闪烁）回调
+  * @brief 编辑状态定时器回调
   * @param[in]   t      定时器指针
   * @param[out]  void
   * @return void
 */
-static void spinbox_timer_blink_cb(lv_timer_t * t)
+static void edit_timer_cb(lv_timer_t * t)
+{
+    /* 暂停定时器（编辑状态） */
+    lv_timer_pause(t);
+
+    /* 失能编辑模式 */
+    State_SetEdit(false);
+}
+
+/**
+  * @brief Spinbox定时器回调
+  * @param[in]   t      定时器指针
+  * @param[out]  void
+  * @return void
+*/
+static void spinbox_timer_cb(lv_timer_t * t)
 {
     lv_obj_t *obj = NULL;
     lv_opa_t  opa = LV_OPA_COVER;
@@ -123,15 +163,9 @@ static void spinbox_event_cb(lv_event_t * e)
     lv_obj_t           *obj         = NULL;
     uint32_t            key         = 0;
 
-    if (NULL == e)
-    {
-        return;
-    }
-
     /* 获取变量 */
     event = lv_event_get_code(e);
     obj   = (lv_obj_t *)lv_event_get_user_data(e);
-
     if (NULL == obj)
     {
         return;
@@ -145,7 +179,8 @@ static void spinbox_event_cb(lv_event_t * e)
 
         /* 按键事件 */
         case LV_EVENT_KEY:
-            if (NULL != indev_keypad)
+            /* 非编辑模式不处理 */
+            if (true == State_GetEdit())
             {
                 /* 获取按键 */
                 key = lv_indev_get_key(indev_keypad);
@@ -162,10 +197,13 @@ static void spinbox_event_cb(lv_event_t * e)
                         /* 数字长显 */
                         lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_MAIN);
                         /* 一直复位着定时器（闪烁） */
-                        if (NULL != timer_spinbox_blink)
-                        {
-                            lv_timer_reset(timer_spinbox_blink);
-                        }
+                        lv_timer_reset(timer_spinbox_blink);
+                        break;
+
+                    /* ENTER */
+                    case LV_KEY_ENTER:
+                        /* 复用为切换对象 */
+                        lv_group_focus_next(group_main);
                         break;
                 }
             }
@@ -173,8 +211,8 @@ static void spinbox_event_cb(lv_event_t * e)
 
         /* 获得焦点事件 */
         case LV_EVENT_FOCUSED:
-            /* 是否存在定时器（闪烁） */
-            if (NULL != timer_spinbox_blink)
+            /* 非编辑模式不处理 */
+            if (true == State_GetEdit())
             {
                 /* 更新定时器（闪烁）的用户数据 */
                 lv_timer_set_user_data(timer_spinbox_blink, obj);
@@ -182,44 +220,37 @@ static void spinbox_event_cb(lv_event_t * e)
                 lv_timer_reset(timer_spinbox_blink);
                 /* 恢复定时器（闪烁） */
                 lv_timer_resume(timer_spinbox_blink);
-                /* 强制不显示文字 */
+                /* 强制隐藏文字 */
                 lv_obj_set_style_text_opa(obj, LV_OPA_TRANSP, LV_PART_MAIN);
             }
             break;
 
         /* 失去焦点事件 */
         case LV_EVENT_DEFOCUSED:
-            /* 是否存在定时器（闪烁） */
-            if (NULL != timer_spinbox_blink)
-            {
-                /* 暂停定时器（闪烁） */
-                lv_timer_pause(timer_spinbox_blink);
-                /* 强制显示文字 */
-                lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_MAIN);
-            }
+            /* 暂停定时器（闪烁） */
+            lv_timer_pause(timer_spinbox_blink);
+            /* 强制显示文字 */
+            lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_MAIN);
             break;
     }
+
+    /* 一直复位着定时器（编辑状态） */
+    lv_timer_reset(timer_quiet_edit);
 }
 
 /**
-  * @brief Roller定时器（闪烁）回调
+  * @brief Roller定时器回调
   * @param[in]   t      定时器指针
   * @param[out]  void
   * @return void
 */
-static void roller_timer_blink_cb(lv_timer_t * t)
+static void roller_timer_cb(lv_timer_t * t)
 {
     lv_obj_t *obj = NULL;
     lv_opa_t  opa = LV_OPA_COVER;
 
-    if (NULL == t)
-    {
-        return;
-    }
-
     /* 获取自定义数据 */
     obj = (lv_obj_t *)lv_timer_get_user_data(t);
-
     if (NULL == obj)
     {
         return;
@@ -254,15 +285,9 @@ static void roller_event_cb(lv_event_t * e)
     lv_obj_t           *obj         = NULL;
     uint32_t            key         = 0;
 
-    if (NULL == e)
-    {
-        return;
-    }
-
     /* 获取变量 */
     event = lv_event_get_code(e);
     obj   = (lv_obj_t *)lv_event_get_user_data(e);
-
     if (NULL == obj)
     {
         return;
@@ -276,7 +301,8 @@ static void roller_event_cb(lv_event_t * e)
 
         /* 按键事件 */
         case LV_EVENT_KEY:
-            if (NULL != indev_keypad)
+            /* 非编辑模式不处理 */
+            if (true == State_GetEdit())
             {
                 /* 获取按键 */
                 key = lv_indev_get_key(indev_keypad);
@@ -293,10 +319,13 @@ static void roller_event_cb(lv_event_t * e)
                         /* 数字长显 */
                         lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_SELECTED);
                         /* 一直复位着定时器（闪烁） */
-                        if (NULL != timer_roller_blink)
-                        {
-                            lv_timer_reset(timer_roller_blink);
-                        }
+                        lv_timer_reset(timer_roller_blink);
+                        break;
+
+                        /* ENTER */
+                    case LV_KEY_ENTER:
+                        /* 复用为切换对象 */
+                        lv_group_focus_next(group_main);
                         break;
                 }
             }
@@ -304,8 +333,8 @@ static void roller_event_cb(lv_event_t * e)
 
         /* 获得焦点事件 */
         case LV_EVENT_FOCUSED:
-            /* 是否存在定时器（闪烁） */
-            if (NULL != timer_roller_blink)
+            /* 非编辑模式不处理 */
+            if (true == State_GetEdit())
             {
                 /* 更新定时器（闪烁）的用户数据 */
                 lv_timer_set_user_data(timer_roller_blink, obj);
@@ -313,23 +342,22 @@ static void roller_event_cb(lv_event_t * e)
                 lv_timer_reset(timer_roller_blink);
                 /* 恢复定时器（闪烁） */
                 lv_timer_resume(timer_roller_blink);
-                /* 强制不显示文字 */
+                /* 强制隐藏文字 */
                 lv_obj_set_style_text_opa(obj, LV_OPA_TRANSP, LV_PART_SELECTED);
             }
             break;
 
         /* 失去焦点事件 */
         case LV_EVENT_DEFOCUSED:
-            /* 是否存在定时器（闪烁） */
-            if (NULL != timer_roller_blink)
-            {
-                /* 暂停定时器（闪烁） */
-                lv_timer_pause(timer_roller_blink);
-                /* 强制显示文字 */
-                lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_SELECTED);
-            }
+            /* 暂停定时器（闪烁） */
+            lv_timer_pause(timer_roller_blink);
+            /* 强制显示文字 */
+            lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_SELECTED);
             break;
     }
+
+    /* 一直复位着定时器（编辑状态） */
+    lv_timer_reset(timer_quiet_edit);
 }
 
 /**
@@ -338,17 +366,19 @@ static void roller_event_cb(lv_event_t * e)
 
 void custom_init(gg_ui_t *ui)
 {
-    lv_group_t *group_main = NULL;
-
     /* 创建变量 */
     group_main          = lv_group_create();
-    timer_spinbox_blink = lv_timer_create(spinbox_timer_blink_cb, 500, NULL);
-    timer_roller_blink  = lv_timer_create(roller_timer_blink_cb,  500, NULL);
+    timer_loop          = lv_timer_create(loop_timer_cb,      20, NULL);
+    timer_spinbox_blink = lv_timer_create(spinbox_timer_cb,  500, NULL);
+    timer_roller_blink  = lv_timer_create(roller_timer_cb,   500, NULL);
+    timer_quiet_edit    = lv_timer_create(edit_timer_cb,    3000, NULL);
 
-    if ((NULL == ui)
-     || (NULL == group_main)
+    if ((NULL == ui                 )
+     || (NULL == group_main         )
+     || (NULL == timer_loop         )
      || (NULL == timer_spinbox_blink)
-     || (NULL == timer_roller_blink))
+     || (NULL == timer_roller_blink )
+     || (NULL == timer_quiet_edit   ))
     {
         return;
     }
@@ -358,32 +388,30 @@ void custom_init(gg_ui_t *ui)
 
     /* 暂停定时器 */
     lv_timer_pause(timer_spinbox_blink);
+    lv_timer_pause(timer_quiet_edit);
     lv_timer_pause(timer_roller_blink);
 
     /* 将组绑定到输入设备 */
     lv_indev_set_group(indev_keypad, group_main);
 
-    lv_group_add_obj(group_main ,ui->screen_main.spinbox_time_on);
-    lv_group_add_obj(group_main ,ui->screen_main.roller_time_on_unit);
-    lv_group_add_obj(group_main ,ui->screen_main.spinbox_time_off);
-    lv_group_add_obj(group_main ,ui->screen_main.roller_time_off_unit);
-    lv_group_add_obj(group_main ,ui->screen_main.button_run);
+    /* 将对象绑定到组 */
+    lv_group_add_obj(group_main ,guider_ui.screen_main.spinbox_time_on);
+    lv_group_add_obj(group_main, guider_ui.screen_main.roller_time_on_unit);
+    lv_group_add_obj(group_main, guider_ui.screen_main.spinbox_time_off);
+    lv_group_add_obj(group_main, guider_ui.screen_main.roller_time_off_unit);
 
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_on,  spinbox_event_cb, LV_EVENT_KEY,       ui->screen_main.spinbox_time_on);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_on,  spinbox_event_cb, LV_EVENT_FOCUSED,   ui->screen_main.spinbox_time_on);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_on,  spinbox_event_cb, LV_EVENT_DEFOCUSED, ui->screen_main.spinbox_time_on);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_off, spinbox_event_cb, LV_EVENT_KEY,       ui->screen_main.spinbox_time_off);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_off, spinbox_event_cb, LV_EVENT_FOCUSED,   ui->screen_main.spinbox_time_off);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_off, spinbox_event_cb, LV_EVENT_DEFOCUSED, ui->screen_main.spinbox_time_off);
-
-    lv_obj_add_event_cb(ui->screen_main.roller_time_on_unit,  roller_event_cb, LV_EVENT_KEY,       ui->screen_main.roller_time_on_unit);
-    lv_obj_add_event_cb(ui->screen_main.roller_time_on_unit,  roller_event_cb, LV_EVENT_FOCUSED,   ui->screen_main.roller_time_on_unit);
-    lv_obj_add_event_cb(ui->screen_main.roller_time_on_unit,  roller_event_cb, LV_EVENT_DEFOCUSED, ui->screen_main.roller_time_on_unit);
-    lv_obj_add_event_cb(ui->screen_main.roller_time_off_unit, roller_event_cb, LV_EVENT_KEY,       ui->screen_main.roller_time_off_unit);
-    lv_obj_add_event_cb(ui->screen_main.roller_time_off_unit, roller_event_cb, LV_EVENT_FOCUSED,   ui->screen_main.roller_time_off_unit);
-    lv_obj_add_event_cb(ui->screen_main.roller_time_off_unit, roller_event_cb, LV_EVENT_DEFOCUSED, ui->screen_main.roller_time_off_unit);
-
-    /* 手动触发一下 */
-    lv_group_focus_obj(ui->screen_main.spinbox_time_on);
+    /* Spinbox */
+    lv_obj_add_event_cb(ui->screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_KEY,           ui->screen_main.spinbox_time_on);
+    lv_obj_add_event_cb(ui->screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_FOCUSED,       ui->screen_main.spinbox_time_on);
+    lv_obj_add_event_cb(ui->screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_DEFOCUSED,     ui->screen_main.spinbox_time_on);
+    lv_obj_add_event_cb(ui->screen_main.spinbox_time_off,     spinbox_event_cb, LV_EVENT_KEY,           ui->screen_main.spinbox_time_off);
+    lv_obj_add_event_cb(ui->screen_main.spinbox_time_off,     spinbox_event_cb, LV_EVENT_FOCUSED,       ui->screen_main.spinbox_time_off);
+    lv_obj_add_event_cb(ui->screen_main.spinbox_time_off,     spinbox_event_cb, LV_EVENT_DEFOCUSED,     ui->screen_main.spinbox_time_off);
+    /* Roller */
+    lv_obj_add_event_cb(ui->screen_main.roller_time_on_unit,  roller_event_cb,  LV_EVENT_KEY,           ui->screen_main.roller_time_on_unit);
+    lv_obj_add_event_cb(ui->screen_main.roller_time_on_unit,  roller_event_cb,  LV_EVENT_FOCUSED,       ui->screen_main.roller_time_on_unit);
+    lv_obj_add_event_cb(ui->screen_main.roller_time_on_unit,  roller_event_cb,  LV_EVENT_DEFOCUSED,     ui->screen_main.roller_time_on_unit);
+    lv_obj_add_event_cb(ui->screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_KEY,           ui->screen_main.roller_time_off_unit);
+    lv_obj_add_event_cb(ui->screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_FOCUSED,       ui->screen_main.roller_time_off_unit);
+    lv_obj_add_event_cb(ui->screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_DEFOCUSED,     ui->screen_main.roller_time_off_unit);
 }
-
