@@ -63,8 +63,9 @@ void Key_Press(KEY_TYPE type)
 {
     memset(&keyObj, 0, sizeof(KEY_OBJECT));
 
-    keyObj.pressingType = type;
     keyObj.lastTick     = GetSysTick();
+    keyObj.pressingType = type;
+    keyObj.bPassing     = TRUE;
 }
 
 /**
@@ -80,7 +81,8 @@ void Key_Release(KEY_TYPE type)
         /* 计算按下的时间 */
         keyObj.pressedTick = DIFF(keyObj.lastTick, GetSysTick());
 
-        /* 更新类型 */
+        /* 更新 */
+        keyObj.bPassing     = FALSE;
         keyObj.pressingType = KEY_TYPE_NULL;
         keyObj.pressedType  = type;
     }
@@ -163,6 +165,28 @@ UINT32 Key_GetPressedTime(void)
     }
 
     return 0;
+}
+
+/**
+  * @brief 清空按下的持续时间
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+void Key_ClearPressedTime(void)
+{
+    keyObj.lastTick = GetSysTick();
+}
+
+/**
+  * @brief 获取是否正在按住
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+BOOL Key_IsPressing(void)
+{
+    return keyObj.bPassing;
 }
 
 /**

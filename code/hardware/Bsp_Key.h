@@ -42,8 +42,10 @@ typedef struct _KEY_OBJECT_
     UINT32   lastTick;              /* 时间戳 */
     KEY_TYPE lastType;              /* 类型   */
 
-    UINT32   pressedTick;           /* 按住的时间 */
     KEY_TYPE pressingType;          /* 按住的类型 */
+    BOOL     bPassing;              /* 是否正在按住 */
+
+    UINT32   pressedTick;           /* 按下的时间 */
     KEY_TYPE pressedType;           /* 按下的类型 */
 } KEY_OBJECT;
 
@@ -94,6 +96,22 @@ KEY_TYPE Key_GetType(void);
   * @return 时间
 */
 UINT32 Key_GetPressedTime(void);
+
+/**
+  * @brief 清空按下的持续时间
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+void Key_ClearPressedTime(void);
+
+/**
+  * @brief 获取是否正在按住
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+BOOL Key_IsPressing(void);
 
 /**
  * @brief Key初始化
