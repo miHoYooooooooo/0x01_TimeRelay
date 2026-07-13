@@ -54,8 +54,8 @@ void ST7789_SetAddress(UINT16 xStart, UINT16 yStart, UINT16 xEnd, UINT16 yEnd);
 
 /**
   * @brief ST7789发送数据
-  * @param[in]  pBuff  缓冲区
-  * @param[in]  len    长度
+  * @param[in]  pBuff   缓冲区
+  * @param[in]  len     长度
   * @param[out] void
   * @return void
 */
@@ -68,6 +68,14 @@ void ST7789_SendData(UINT8 *pBuff, UINT32 len);
  * @return void
  */
 void ST7789_Reset(void);
+
+/**
+ * @brief ST7789清屏
+ * @param[in]   color   颜色
+ * @param[out]  void
+ * @return void
+ */
+void ST7789_Clear(UINT16 color);
 
 /**
  * @brief ST7789使能背光

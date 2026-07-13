@@ -109,9 +109,6 @@ static void disp_init(void)
 {
     /* ST7789初始化 */
     ST7789_Init();
-
-    /* 使能背光，开始显示 */
-    ST7789_EnableBacklight();
 }
 
 volatile bool disp_flush_enabled = true;
