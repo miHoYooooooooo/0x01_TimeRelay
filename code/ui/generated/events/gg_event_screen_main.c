@@ -17,16 +17,27 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/9
+ * Generated on    : 2026/7/13
  * ------------------------------------------------------------------------------
  */
 
 #include "gg_event.h"
 #include "custom.h"
 
-// No event handlers
+static void screen_event_handler(lv_event_t * e)
+{
+    gg_ui_t * ui = lv_event_get_user_data(e);
+
+    lv_event_code_t code = lv_event_get_code(e);
+
+    switch(code) {
+
+        default:
+            break;
+    }
+}
 
 void gg_event_init_screen_main(gg_ui_t * ui)
 {
-    // No event callbacks
+    lv_obj_add_event_cb(ui->screen_main.screen, screen_event_handler, LV_EVENT_ALL, ui);
 }

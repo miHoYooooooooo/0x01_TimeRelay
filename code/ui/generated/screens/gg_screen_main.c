@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/9
+ * Generated on    : 2026/7/13
  * ------------------------------------------------------------------------------
  */
 
@@ -36,15 +36,6 @@ void setup_screen_main(gg_ui_t * ui)
 
     // Style: ui->screen_main.screen [LV_PART_MAIN|LV_STATE_DEFAULT]
     lv_obj_set_style_bg_color(ui->screen_main.screen, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Create label: ui->screen_main.label_for_edit
-    ui->screen_main.label_for_edit = lv_label_create(ui->screen_main.screen);
-    lv_obj_set_width(ui->screen_main.label_for_edit, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui->screen_main.label_for_edit, LV_SIZE_CONTENT);
-    lv_obj_set_align(ui->screen_main.label_for_edit, LV_ALIGN_TOP_LEFT);
-    lv_obj_set_x(ui->screen_main.label_for_edit, 0);
-    lv_obj_set_y(ui->screen_main.label_for_edit, 0);
-    lv_label_set_text(ui->screen_main.label_for_edit, "");
 
     // Create label: ui->screen_main.label_time_off_bg
     ui->screen_main.label_time_off_bg = lv_label_create(ui->screen_main.screen);
@@ -80,31 +71,31 @@ void setup_screen_main(gg_ui_t * ui)
     lv_obj_set_style_pad_left(ui->screen_main.label_time_on_bg, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(ui->screen_main.label_time_on_bg, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Create line: ui->screen_main.line
-    ui->screen_main.line = lv_line_create(ui->screen_main.screen);
-    lv_obj_set_width(ui->screen_main.line, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui->screen_main.line, LV_SIZE_CONTENT);
-    lv_obj_set_align(ui->screen_main.line, LV_ALIGN_TOP_LEFT);
-    lv_obj_set_x(ui->screen_main.line, 120);
-    lv_obj_set_y(ui->screen_main.line, 8);
+    // Create line: ui->screen_main.line_y
+    ui->screen_main.line_y = lv_line_create(ui->screen_main.screen);
+    lv_obj_set_width(ui->screen_main.line_y, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui->screen_main.line_y, LV_SIZE_CONTENT);
+    lv_obj_set_align(ui->screen_main.line_y, LV_ALIGN_TOP_LEFT);
+    lv_obj_set_x(ui->screen_main.line_y, 120);
+    lv_obj_set_y(ui->screen_main.line_y, 8);
     static const lv_point_precise_t line_MRAS9C1WW00P_pts[] = {{0, 0}, {0, 38}};
-    lv_line_set_points(ui->screen_main.line, line_MRAS9C1WW00P_pts, 2);
+    lv_line_set_points(ui->screen_main.line_y, line_MRAS9C1WW00P_pts, 2);
 
-    // Style: ui->screen_main.line [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_line_color(ui->screen_main.line, lv_color_hex(0x3c4850), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Style: ui->screen_main.line_y [LV_PART_MAIN|LV_STATE_DEFAULT]
+    lv_obj_set_style_line_color(ui->screen_main.line_y, lv_color_hex(0x3c4850), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Create line: ui->screen_main.line_copy
-    ui->screen_main.line_copy = lv_line_create(ui->screen_main.screen);
-    lv_obj_set_width(ui->screen_main.line_copy, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui->screen_main.line_copy, LV_SIZE_CONTENT);
-    lv_obj_set_align(ui->screen_main.line_copy, LV_ALIGN_TOP_LEFT);
-    lv_obj_set_x(ui->screen_main.line_copy, 10);
-    lv_obj_set_y(ui->screen_main.line_copy, 142);
+    // Create line: ui->screen_main.line_x
+    ui->screen_main.line_x = lv_line_create(ui->screen_main.screen);
+    lv_obj_set_width(ui->screen_main.line_x, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui->screen_main.line_x, LV_SIZE_CONTENT);
+    lv_obj_set_align(ui->screen_main.line_x, LV_ALIGN_TOP_LEFT);
+    lv_obj_set_x(ui->screen_main.line_x, 10);
+    lv_obj_set_y(ui->screen_main.line_x, 142);
     static const lv_point_precise_t MRC29POZ324M_pts[] = {{0, 0}, {220, 0}};
-    lv_line_set_points(ui->screen_main.line_copy, MRC29POZ324M_pts, 2);
+    lv_line_set_points(ui->screen_main.line_x, MRC29POZ324M_pts, 2);
 
-    // Style: ui->screen_main.line_copy [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_line_color(ui->screen_main.line_copy, lv_color_hex(0x3c4850), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Style: ui->screen_main.line_x [LV_PART_MAIN|LV_STATE_DEFAULT]
+    lv_obj_set_style_line_color(ui->screen_main.line_x, lv_color_hex(0x3c4850), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Create label: ui->screen_main.label_main
     ui->screen_main.label_main = lv_label_create(ui->screen_main.screen);

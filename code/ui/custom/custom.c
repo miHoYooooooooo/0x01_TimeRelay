@@ -429,7 +429,7 @@ void custom_init(gg_ui_t *ui)
     }
 
     /* LED显示绿色 */
-    lv_led_set_color(ui->screen_main.led_state, lv_color_hex(0x00FF00));
+    lv_led_set_color(guider_ui.screen_main.led_state, lv_color_hex(0x00FF00));
 
     /* 暂停定时器 */
     lv_timer_pause(timer_spinbox_blink);
@@ -439,23 +439,23 @@ void custom_init(gg_ui_t *ui)
     lv_indev_set_group(indev_keypad, group_main);
 
     /* 将对象绑定到组 */
-    lv_group_add_obj(group_main ,guider_ui.screen_main.spinbox_time_on);
+    lv_group_add_obj(group_main, guider_ui.screen_main.spinbox_time_on);
     lv_group_add_obj(group_main, guider_ui.screen_main.roller_time_on_unit);
     lv_group_add_obj(group_main, guider_ui.screen_main.spinbox_time_off);
     lv_group_add_obj(group_main, guider_ui.screen_main.roller_time_off_unit);
 
     /* Spinbox */
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_KEY,           ui->screen_main.spinbox_time_on);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_FOCUSED,       ui->screen_main.spinbox_time_on);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_DEFOCUSED,     ui->screen_main.spinbox_time_on);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_off,     spinbox_event_cb, LV_EVENT_KEY,           ui->screen_main.spinbox_time_off);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_off,     spinbox_event_cb, LV_EVENT_FOCUSED,       ui->screen_main.spinbox_time_off);
-    lv_obj_add_event_cb(ui->screen_main.spinbox_time_off,     spinbox_event_cb, LV_EVENT_DEFOCUSED,     ui->screen_main.spinbox_time_off);
+    lv_obj_add_event_cb(guider_ui.screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_KEY,           guider_ui.screen_main.spinbox_time_on);
+    lv_obj_add_event_cb(guider_ui.screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_FOCUSED,       guider_ui.screen_main.spinbox_time_on);
+    lv_obj_add_event_cb(guider_ui.screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_DEFOCUSED,     guider_ui.screen_main.spinbox_time_on);
+    lv_obj_add_event_cb(guider_ui.screen_main.spinbox_time_off,     spinbox_event_cb, LV_EVENT_KEY,           guider_ui.screen_main.spinbox_time_off);
+    lv_obj_add_event_cb(guider_ui.screen_main.spinbox_time_off,     spinbox_event_cb, LV_EVENT_FOCUSED,       guider_ui.screen_main.spinbox_time_off);
+    lv_obj_add_event_cb(guider_ui.screen_main.spinbox_time_off,     spinbox_event_cb, LV_EVENT_DEFOCUSED,     guider_ui.screen_main.spinbox_time_off);
     /* Roller */
-    lv_obj_add_event_cb(ui->screen_main.roller_time_on_unit,  roller_event_cb,  LV_EVENT_KEY,           ui->screen_main.roller_time_on_unit);
-    lv_obj_add_event_cb(ui->screen_main.roller_time_on_unit,  roller_event_cb,  LV_EVENT_FOCUSED,       ui->screen_main.roller_time_on_unit);
-    lv_obj_add_event_cb(ui->screen_main.roller_time_on_unit,  roller_event_cb,  LV_EVENT_DEFOCUSED,     ui->screen_main.roller_time_on_unit);
-    lv_obj_add_event_cb(ui->screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_KEY,           ui->screen_main.roller_time_off_unit);
-    lv_obj_add_event_cb(ui->screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_FOCUSED,       ui->screen_main.roller_time_off_unit);
-    lv_obj_add_event_cb(ui->screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_DEFOCUSED,     ui->screen_main.roller_time_off_unit);
+    lv_obj_add_event_cb(guider_ui.screen_main.roller_time_on_unit,  roller_event_cb,  LV_EVENT_KEY,           guider_ui.screen_main.roller_time_on_unit);
+    lv_obj_add_event_cb(guider_ui.screen_main.roller_time_on_unit,  roller_event_cb,  LV_EVENT_FOCUSED,       guider_ui.screen_main.roller_time_on_unit);
+    lv_obj_add_event_cb(guider_ui.screen_main.roller_time_on_unit,  roller_event_cb,  LV_EVENT_DEFOCUSED,     guider_ui.screen_main.roller_time_on_unit);
+    lv_obj_add_event_cb(guider_ui.screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_KEY,           guider_ui.screen_main.roller_time_off_unit);
+    lv_obj_add_event_cb(guider_ui.screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_FOCUSED,       guider_ui.screen_main.roller_time_off_unit);
+    lv_obj_add_event_cb(guider_ui.screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_DEFOCUSED,     guider_ui.screen_main.roller_time_off_unit);
 }

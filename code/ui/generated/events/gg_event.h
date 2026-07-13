@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/9
+ * Generated on    : 2026/7/13
  * ------------------------------------------------------------------------------
  */
 
@@ -47,9 +47,12 @@ static inline void gg_resume_anim(lv_obj_t * obj, lv_anim_exec_xcb_t exec_cb)
     }
 }
 
+void anim_opa_cb(void * var, int32_t v);
+
 void gg_event_init_layer_sys(gg_ui_t * ui);
 void gg_event_init_layer_top(gg_ui_t * ui);
 void gg_event_init_layer_bottom(gg_ui_t * ui);
+void gg_event_init_screen_logo(gg_ui_t * ui);
 void gg_event_init_screen_main(gg_ui_t * ui);
 
 #ifdef __cplusplus

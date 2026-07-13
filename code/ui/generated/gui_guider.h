@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/9
+ * Generated on    : 2026/7/13
  * ------------------------------------------------------------------------------
  */
 
@@ -45,6 +45,13 @@ typedef struct {
 
 typedef struct {
     lv_obj_t * screen;
+    lv_obj_t * container_logo;
+    lv_obj_t * container_logo_image_logo;
+    lv_obj_t * container_logo_label_logo;
+} gg_screen_logo_t;
+
+typedef struct {
+    lv_obj_t * screen;
     lv_obj_t * led_state;
     lv_obj_t * label_state_relay;
     lv_obj_t * label_state_run;
@@ -53,17 +60,17 @@ typedef struct {
     lv_obj_t * roller_time_on_unit;
     lv_obj_t * roller_time_off_unit;
     lv_obj_t * label_main;
-    lv_obj_t * line_copy;
-    lv_obj_t * line;
+    lv_obj_t * line_x;
+    lv_obj_t * line_y;
     lv_obj_t * label_time_on_bg;
     lv_obj_t * label_time_off_bg;
-    lv_obj_t * label_for_edit;
 } gg_screen_main_t;
 
 typedef struct {
     gg_layer_sys_t layer_sys;
     gg_layer_top_t layer_top;
     gg_layer_bottom_t layer_bottom;
+    gg_screen_logo_t screen_logo;
     gg_screen_main_t screen_main;
 } gg_ui_t;
 
@@ -81,6 +88,7 @@ extern gg_ui_t guider_ui;
 void setup_layer_sys(gg_ui_t * ui);
 void setup_layer_top(gg_ui_t * ui);
 void setup_layer_bottom(gg_ui_t * ui);
+void setup_screen_logo(gg_ui_t * ui);
 void setup_screen_main(gg_ui_t * ui);
 
 #ifdef __cplusplus
