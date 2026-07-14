@@ -317,16 +317,16 @@ static void keypad_read(lv_indev_t * indev_drv, lv_indev_data_t * data)
     if(act_key != KEY_TYPE_NULL) {
         data->state = LV_INDEV_STATE_PRESSED;
 
-        /* ????? */
+        /* 非编辑模式 */
         if (false == State_GetEdit())
         {
-            /* ???ENTER??????????????+-?? */
+            /* 非编辑模式下只允许ENTER */
             if (KEY_TYPE_ENTER == act_key)
             {
                 act_key = LV_KEY_ENTER;
             }
         }
-        /* ???? */
+        /* 编辑模式 */
         else
         {
             /*Translate the keys to LVGL control characters according to your key definitions*/
