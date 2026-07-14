@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/13
+ * Generated on    : 2026/7/14
  * ------------------------------------------------------------------------------
  */
 
@@ -37,42 +37,14 @@ void setup_screen_logo(gg_ui_t * ui)
     // Style: ui->screen_logo.screen [LV_PART_MAIN|LV_STATE_DEFAULT]
     lv_obj_set_style_bg_color(ui->screen_logo.screen, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Create container: ui->screen_logo.container_logo
-    ui->screen_logo.container_logo = lv_obj_create(ui->screen_logo.screen);
-    lv_obj_set_width(ui->screen_logo.container_logo, 240);
-    lv_obj_set_height(ui->screen_logo.container_logo, 64);
-    lv_obj_set_align(ui->screen_logo.container_logo, LV_ALIGN_CENTER);
-    lv_obj_set_x(ui->screen_logo.container_logo, 0);
-    lv_obj_set_y(ui->screen_logo.container_logo, 0);
-    lv_obj_set_scrollbar_mode(ui->screen_logo.container_logo, LV_SCROLLBAR_MODE_OFF);
-
-    // Style: ui->screen_logo.container_logo [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_bg_opa(ui->screen_logo.container_logo, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(ui->screen_logo.container_logo, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Create label: ui->screen_logo.container_logo_label_logo
-    ui->screen_logo.container_logo_label_logo = lv_label_create(ui->screen_logo.container_logo);
-    lv_obj_set_width(ui->screen_logo.container_logo_label_logo, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui->screen_logo.container_logo_label_logo, LV_SIZE_CONTENT);
-    lv_obj_set_align(ui->screen_logo.container_logo_label_logo, LV_ALIGN_CENTER);
-    lv_obj_set_x(ui->screen_logo.container_logo_label_logo, 42);
-    lv_obj_set_y(ui->screen_logo.container_logo_label_logo, 0);
-    lv_label_set_text_static(ui->screen_logo.container_logo_label_logo, "GitHub");
-
-    // Style: ui->screen_logo.container_logo_label_logo [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_text_color(ui->screen_logo.container_logo_label_logo, lv_color_hex(0xffffff),
-                                LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_logo.container_logo_label_logo, &lv_font_LiberationSans_Bold_40,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Create image: ui->screen_logo.container_logo_image_logo
-    ui->screen_logo.container_logo_image_logo = lv_image_create(ui->screen_logo.container_logo);
-    lv_obj_set_width(ui->screen_logo.container_logo_image_logo, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui->screen_logo.container_logo_image_logo, LV_SIZE_CONTENT);
-    lv_obj_set_align(ui->screen_logo.container_logo_image_logo, LV_ALIGN_CENTER);
-    lv_obj_set_x(ui->screen_logo.container_logo_image_logo, -75);
-    lv_obj_set_y(ui->screen_logo.container_logo_image_logo, 0);
-    lv_image_set_src(ui->screen_logo.container_logo_image_logo, &github_64x64_RGB565_aligned);
+    // Create image: ui->screen_logo.image_github
+    ui->screen_logo.image_github = lv_image_create(ui->screen_logo.screen);
+    lv_obj_set_width(ui->screen_logo.image_github, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui->screen_logo.image_github, LV_SIZE_CONTENT);
+    lv_obj_set_align(ui->screen_logo.image_github, LV_ALIGN_CENTER);
+    lv_obj_set_x(ui->screen_logo.image_github, 0);
+    lv_obj_set_y(ui->screen_logo.image_github, 0);
+    lv_image_set_src(ui->screen_logo.image_github, &github_80x80_RGB565_aligned);
 
     // screen_logo custom code
 

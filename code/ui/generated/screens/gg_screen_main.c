@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/13
+ * Generated on    : 2026/7/14
  * ------------------------------------------------------------------------------
  */
 
@@ -47,7 +47,7 @@ void setup_screen_main(gg_ui_t * ui)
     lv_label_set_text(ui->screen_main.label_time_off_bg, "888");
 
     // Style: ui->screen_main.label_time_off_bg [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_text_color(ui->screen_main.label_time_off_bg, lv_color_hex(0x0f0f0f), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->screen_main.label_time_off_bg, lv_color_hex(0x292929), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui->screen_main.label_time_off_bg, &lv_font_deluge_led_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(ui->screen_main.label_time_off_bg, 9, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(ui->screen_main.label_time_off_bg, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -64,7 +64,7 @@ void setup_screen_main(gg_ui_t * ui)
     lv_label_set_text(ui->screen_main.label_time_on_bg, "888");
 
     // Style: ui->screen_main.label_time_on_bg [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_text_color(ui->screen_main.label_time_on_bg, lv_color_hex(0x0f0f0f), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->screen_main.label_time_on_bg, lv_color_hex(0x292929), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui->screen_main.label_time_on_bg, &lv_font_deluge_led_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(ui->screen_main.label_time_on_bg, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(ui->screen_main.label_time_on_bg, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -253,7 +253,7 @@ void setup_screen_main(gg_ui_t * ui)
 
     // Style: ui->screen_main.label_state_run [LV_PART_MAIN|LV_STATE_DEFAULT]
     lv_obj_set_style_text_color(ui->screen_main.label_state_run, lv_color_hex(0x00ff00), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_main.label_state_run, &lv_font_LiberationSans_20,
+    lv_obj_set_style_text_font(ui->screen_main.label_state_run, &lv_font_LiberationSans_Bold_20,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->screen_main.label_state_run, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -268,7 +268,7 @@ void setup_screen_main(gg_ui_t * ui)
 
     // Style: ui->screen_main.label_state_relay [LV_PART_MAIN|LV_STATE_DEFAULT]
     lv_obj_set_style_text_color(ui->screen_main.label_state_relay, lv_color_hex(0x00ff00), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_main.label_state_relay, &lv_font_LiberationSans_20,
+    lv_obj_set_style_text_font(ui->screen_main.label_state_relay, &lv_font_LiberationSans_Bold_20,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Create led: ui->screen_main.led_state

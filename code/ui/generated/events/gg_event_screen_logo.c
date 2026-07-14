@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/13
+ * Generated on    : 2026/7/14
  * ------------------------------------------------------------------------------
  */
 
@@ -37,10 +37,10 @@ static void screen_event_handler(lv_event_t * e)
             lv_anim_init(&anim);
             lv_anim_set_duration(&anim, 1000);
             lv_anim_set_delay(&anim, 0);
-            lv_anim_set_path_cb(&anim, lv_anim_path_ease_in);
+            lv_anim_set_path_cb(&anim, lv_anim_path_linear);
             lv_anim_set_repeat_count(&anim, 0);
             lv_anim_set_repeat_delay(&anim, 0);
-            lv_anim_set_var(&anim, ui->screen_logo.container_logo);
+            lv_anim_set_var(&anim, ui->screen_logo.image_github);
 
             lv_anim_set_exec_cb(&anim, anim_opa_cb);
             lv_anim_set_values(&anim, 0, 255);

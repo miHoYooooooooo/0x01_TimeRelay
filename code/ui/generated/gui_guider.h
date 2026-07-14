@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/13
+ * Generated on    : 2026/7/14
  * ------------------------------------------------------------------------------
  */
 
@@ -45,9 +45,7 @@ typedef struct {
 
 typedef struct {
     lv_obj_t * screen;
-    lv_obj_t * container_logo;
-    lv_obj_t * container_logo_image_logo;
-    lv_obj_t * container_logo_label_logo;
+    lv_obj_t * image_github;
 } gg_screen_logo_t;
 
 typedef struct {

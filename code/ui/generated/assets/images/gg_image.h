@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/13
+ * Generated on    : 2026/7/14
  * ------------------------------------------------------------------------------
  */
 
@@ -29,7 +29,7 @@ extern "C" {
 
 #include "lvgl.h"
 
-LV_IMAGE_DECLARE(github_64x64_RGB565_aligned);
+LV_IMAGE_DECLARE(github_80x80_RGB565_aligned);
 
 #ifdef __cplusplus
 }

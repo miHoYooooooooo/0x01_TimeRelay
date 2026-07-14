@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.0
- * Generated on    : 2026/7/13
+ * Generated on    : 2026/7/14
  * ------------------------------------------------------------------------------
  */
 
@@ -29,10 +29,8 @@ extern "C" {
 
 #include "lvgl.h"
 
-LV_FONT_DECLARE(lv_font_LiberationSans_Bold_40);
-LV_FONT_DECLARE(lv_font_LiberationSans_20);
-LV_FONT_DECLARE(lv_font_deluge_led_60);
 LV_FONT_DECLARE(lv_font_LiberationSans_Bold_20);
+LV_FONT_DECLARE(lv_font_deluge_led_60);
 
 #ifdef __cplusplus
 }
