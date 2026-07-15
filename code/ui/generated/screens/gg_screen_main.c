@@ -118,8 +118,8 @@ void setup_screen_main(gg_ui_t * ui)
     lv_obj_set_align(ui->screen_main.roller_time_off_unit, LV_ALIGN_TOP_LEFT);
     lv_obj_set_x(ui->screen_main.roller_time_off_unit, 166);
     lv_obj_set_y(ui->screen_main.roller_time_off_unit, 150);
-    lv_roller_set_options(ui->screen_main.roller_time_off_unit, "H\nM\nS\nms", LV_ROLLER_MODE_INFINITE);
-    lv_roller_set_selected(ui->screen_main.roller_time_off_unit, 2, false);
+    lv_roller_set_options(ui->screen_main.roller_time_off_unit, "ms\nS\nM\nH", LV_ROLLER_MODE_INFINITE);
+    lv_roller_set_selected(ui->screen_main.roller_time_off_unit, 1, false);
 
     // Style: ui->screen_main.roller_time_off_unit [LV_PART_MAIN|LV_STATE_DEFAULT]
     lv_obj_set_style_bg_opa(ui->screen_main.roller_time_off_unit, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -151,8 +151,8 @@ void setup_screen_main(gg_ui_t * ui)
     lv_obj_set_align(ui->screen_main.roller_time_on_unit, LV_ALIGN_TOP_LEFT);
     lv_obj_set_x(ui->screen_main.roller_time_on_unit, 166);
     lv_obj_set_y(ui->screen_main.roller_time_on_unit, 67);
-    lv_roller_set_options(ui->screen_main.roller_time_on_unit, "H\nM\nS\nms", LV_ROLLER_MODE_INFINITE);
-    lv_roller_set_selected(ui->screen_main.roller_time_on_unit, 2, false);
+    lv_roller_set_options(ui->screen_main.roller_time_on_unit, "ms\nS\nM\nH", LV_ROLLER_MODE_INFINITE);
+    lv_roller_set_selected(ui->screen_main.roller_time_on_unit, 1, false);
 
     // Style: ui->screen_main.roller_time_on_unit [LV_PART_MAIN|LV_STATE_DEFAULT]
     lv_obj_set_style_bg_opa(ui->screen_main.roller_time_on_unit, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -184,7 +184,7 @@ void setup_screen_main(gg_ui_t * ui)
     lv_obj_set_align(ui->screen_main.spinbox_time_on, LV_ALIGN_CENTER);
     lv_obj_set_x(ui->screen_main.spinbox_time_on, -34);
     lv_obj_set_y(ui->screen_main.spinbox_time_on, -26);
-    lv_spinbox_set_value(ui->screen_main.spinbox_time_on, 12);
+    lv_spinbox_set_value(ui->screen_main.spinbox_time_on, 0);
     lv_spinbox_set_rollover(ui->screen_main.spinbox_time_on, false);
     lv_spinbox_set_digit_count(ui->screen_main.spinbox_time_on, 3);
     lv_spinbox_set_range(ui->screen_main.spinbox_time_on, 0, 999);
@@ -216,7 +216,7 @@ void setup_screen_main(gg_ui_t * ui)
     lv_obj_set_align(ui->screen_main.spinbox_time_off, LV_ALIGN_CENTER);
     lv_obj_set_x(ui->screen_main.spinbox_time_off, -34);
     lv_obj_set_y(ui->screen_main.spinbox_time_off, 70);
-    lv_spinbox_set_value(ui->screen_main.spinbox_time_off, 12);
+    lv_spinbox_set_value(ui->screen_main.spinbox_time_off, 0);
     lv_spinbox_set_rollover(ui->screen_main.spinbox_time_off, false);
     lv_spinbox_set_digit_count(ui->screen_main.spinbox_time_off, 3);
     lv_spinbox_set_range(ui->screen_main.spinbox_time_off, 0, 999);

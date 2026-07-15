@@ -15,6 +15,7 @@
 #include "lvgl.h"
 #include "custom.h"
 #include "Bsp_Key.h"
+#include "Mcu_Param.h"
 #include "Mcu_State.h"
 
 /*********************
@@ -44,6 +45,26 @@ static lv_timer_t *timer_roller_blink  = NULL;      /* Roller 文字闪烁 */
 /**********************
  *      FUNCTION
  **********************/
+/**
+  * @brief 更新参数
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+static void param_update(void)
+{
+    PARAM_OBJECT *pParamObj = Param_GetObj();
+
+    /* 获取参数 */
+    pParamObj->relayOnObj.time  = lv_spinbox_get_value(guider_ui.screen_main.spinbox_time_on);
+    pParamObj->relayOffObj.time = lv_spinbox_get_value(guider_ui.screen_main.spinbox_time_off);
+    pParamObj->relayOnObj.unit  = (RELAY_UNIT)lv_roller_get_selected(guider_ui.screen_main.roller_time_on_unit);
+    pParamObj->relayOffObj.unit = (RELAY_UNIT)lv_roller_get_selected(guider_ui.screen_main.roller_time_off_unit);
+
+    /* 更新参数 */
+    Param_Update();
+}
+
 /**
   * @brief 循环处理回调
   * @param[in]   void
@@ -88,6 +109,9 @@ static void loop_timer_cb(lv_timer_t * t)
                 {
                     /* 手动触发当前对象的失去焦点事件 */
                     lv_obj_send_event(lv_group_get_focused(group_main), LV_EVENT_DEFOCUSED, lv_group_get_focused(group_main));
+
+                    /* 更新参数 */
+                    param_update();
                 }
             }
 
@@ -413,6 +437,8 @@ static void roller_event_cb(lv_event_t * e)
 
 void custom_init(gg_ui_t *ui)
 {
+    PARAM_OBJECT *pParamObj = Param_GetObj();
+
     /* 创建变量 */
     group_main          = lv_group_create();
     timer_loop          = lv_timer_create(loop_timer_cb,      20, NULL);
@@ -458,4 +484,10 @@ void custom_init(gg_ui_t *ui)
     lv_obj_add_event_cb(guider_ui.screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_KEY,           guider_ui.screen_main.roller_time_off_unit);
     lv_obj_add_event_cb(guider_ui.screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_FOCUSED,       guider_ui.screen_main.roller_time_off_unit);
     lv_obj_add_event_cb(guider_ui.screen_main.roller_time_off_unit, roller_event_cb,  LV_EVENT_DEFOCUSED,     guider_ui.screen_main.roller_time_off_unit);
+
+    /* 更新参数 */
+    lv_spinbox_set_value  (guider_ui.screen_main.spinbox_time_on,      pParamObj->relayOnObj.time);
+    lv_spinbox_set_value  (guider_ui.screen_main.spinbox_time_off,     pParamObj->relayOffObj.time);
+    lv_roller_set_selected(guider_ui.screen_main.roller_time_on_unit,  pParamObj->relayOnObj.unit,  LV_ANIM_OFF);
+    lv_roller_set_selected(guider_ui.screen_main.roller_time_off_unit, pParamObj->relayOffObj.unit, LV_ANIM_OFF);
 }
