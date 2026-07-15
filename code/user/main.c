@@ -10,6 +10,7 @@
                         头文件
 *****************************************************/
 #include "pico/stdlib.h"
+#include "pico/flash.h"
 #include "pico/multicore.h"
 #include "lvgl.h"
 #include "lv_port_disp.h"
@@ -19,10 +20,12 @@
 #include "Bsp_Clock.h"
 #include "Bsp_Led.h"
 #include "Bsp_SysTick.h"
+#include "Mcu_Param.h"
 
 /****************************************************
                         宏定义
 *****************************************************/
+#define     PICO_USE_MULTICORE              (1U)        /* 是否使用多核 */
 
 /****************************************************
                       结构体定义
@@ -40,16 +43,32 @@ gg_ui_t guider_ui;
 /****************************************************
                        函数定义
 *****************************************************/
+#if  PICO_USE_MULTICORE
+/**
+  * @brief 核1入口函数
+  * @param[in]   void
+  * @param[out]  void
+  * @return 参数指针
+*/
 void core1_entry(void)
 {
+    /* Flash多核操作安全初始化 */
+    flash_safe_execute_core_init();
+
     while (TRUE)
     {
         lv_timer_handler();
     }
 }
+#endif
 
-
-int main()
+/**
+  * @brief 主函数
+  * @param[in]   void
+  * @param[out]  void
+  * @return 参数指针
+*/
+int main(void)
 {
     /* 时钟初始化 */
     Clock_Init();
@@ -61,6 +80,9 @@ int main()
     /* LED初始化 */
     Led_Init();
 
+    /* 参数初始化 */
+    Param_Init();
+
     /* 打印时钟信息 */
     Clock_PrintFreq();
 
@@ -69,14 +91,21 @@ int main()
     lv_port_disp_init();
     lv_port_indev_init();
 
+    /* UI初始化 */
     setup_ui(&guider_ui);
     custom_init(&guider_ui);
 
+#if  PICO_USE_MULTICORE
+    /* Flash多核操作安全初始化 */
+    flash_safe_execute_core_init();
     /* 启动多核 */
     multicore_launch_core1(core1_entry);
+#endif
 
     while (TRUE)
     {
-        // lv_timer_handler();
+    #if  !PICO_USE_MULTICORE
+        lv_timer_handler();
+    #endif
     }
 }
