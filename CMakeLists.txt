@@ -38,7 +38,6 @@ pico_sdk_init()
 include_directories(./code/user)
 include_directories(./code/hardware)
 include_directories(./code/lib/lvgl-9.4.0/examples/porting)
-# include_directories(./code/ui)
 
 # 源文件路径
 aux_source_directory(./code/user                                SRC_DIR)
@@ -66,12 +65,13 @@ pico_enable_stdio_usb (${PROJECT_NAME} 0)
 target_link_libraries(${PROJECT_NAME}
         pico_stdlib
         pico_multicore
-        lvgl
-        ui
         hardware_dma
+        hardware_flash
         hardware_gpio
         hardware_spi
         hardware_pwm
+        lvgl
+        ui
     )
 
 # 每个函数/变量放独立段

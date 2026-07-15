@@ -74,11 +74,20 @@ BOOL WaitForTime(UINT32 wait, UINT32 start, UINT32 end);
 
 /**
  * @brief   ms延时函数
- * @param[in]   ms      毫秒
+ * @param[in]   ms          毫秒
  * @param[out]  void
  * @return  void
  */
 void DelayMs(UINT32 ms);
+
+/**
+  * @brief U32校验和
+  * @param[in]   pData      数据
+  * @param[in]   len        长度
+  * @param[out]  void
+  * @return 校验和
+*/
+UINT32 CheckSumU32(UINT8 *pData, UINT32 len);
 
 /****************************************************
                        函数定义
