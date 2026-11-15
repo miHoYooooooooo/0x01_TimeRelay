@@ -128,6 +128,10 @@ void Irq_GpioHandler(uint gpio, uint32_t events)
         case BSP_KEY_ENTER_PIN:
             type = KEY_TYPE_ENTER;
             break;
+
+        case BSP_KEY_RUN_PIN:
+            type = KEY_TYPE_RUN;
+            break;
     }
 
     /* 获取动作 */

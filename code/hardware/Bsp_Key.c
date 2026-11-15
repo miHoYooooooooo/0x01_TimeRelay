@@ -47,10 +47,12 @@ static void hardware_init(void)
     gpio_init(BSP_KEY_UP_PIN);
     gpio_init(BSP_KEY_DOWN_PIN);
     gpio_init(BSP_KEY_ENTER_PIN);
+    gpio_init(BSP_KEY_RUN_PIN);
     /* 设置外部中断 */
     gpio_set_irq_enabled_with_callback(BSP_KEY_UP_PIN,    GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true, &Irq_GpioHandler);
     gpio_set_irq_enabled_with_callback(BSP_KEY_DOWN_PIN,  GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true, &Irq_GpioHandler);
     gpio_set_irq_enabled_with_callback(BSP_KEY_ENTER_PIN, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true, &Irq_GpioHandler);
+    gpio_set_irq_enabled_with_callback(BSP_KEY_RUN_PIN,   GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true, &Irq_GpioHandler);
 }
 
 /**
@@ -145,6 +147,17 @@ KEY_TYPE Key_GetType(void)
     }
 
     return type;
+}
+
+/**
+  * @brief 清空按键类型
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+void Key_ClearType(void)
+{
+    memset(&keyObj, 0, sizeof(KEY_OBJECT));
 }
 
 /**

@@ -16,8 +16,8 @@
  * code is regenerated.
  *
  * Tool            : GUI Guider
- * Version         : 2.0.0
- * Generated on    : 2026/7/14
+ * Version         : 2.0.1
+ * Generated on    : 2026/11/15
  * ------------------------------------------------------------------------------
  */
 
@@ -28,11 +28,12 @@
 void setup_layer_sys(gg_ui_t * ui)
 {
     // Setup lv_layer_sys()
+    ui->layer_sys.layer = lv_layer_sys();
 
     // layer_sys custom code
 
     // Update layer_sys layout.
-    lv_obj_update_layout(lv_layer_sys());
+    lv_obj_update_layout(ui->layer_sys.layer);
 
     // Init events of layer_sys.
     gg_event_init_layer_sys(ui);

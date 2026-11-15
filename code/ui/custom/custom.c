@@ -34,6 +34,7 @@
 /**********************
  *  STATIC VARIABLES
  **********************/
+/* 键盘 */
 extern lv_indev_t *indev_keypad;
 /* 组 */
 static lv_group_t *group_main          = NULL;
@@ -41,19 +42,29 @@ static lv_group_t *group_main          = NULL;
 static lv_timer_t *timer_loop          = NULL;      /* 循环执行 */
 static lv_timer_t *timer_spinbox_blink = NULL;      /* Spinbox文字闪烁 */
 static lv_timer_t *timer_roller_blink  = NULL;      /* Roller 文字闪烁 */
+static lv_timer_t *timer_edit_timeout  = NULL;      /* 编辑超时 */
 
 /**********************
  *      FUNCTION
  **********************/
 /**
-  * @brief 更新参数
-  * @param[in]   void
+  * @brief 编辑模式
+  * @param[in]   t      定时器指针
   * @param[out]  void
   * @return void
 */
-static void param_update(void)
+static void edit_quit_time_cb(lv_timer_t * t)
 {
     PARAM_OBJECT *pParamObj = Param_GetObj();
+
+    State_SetEdit(FALSE);
+
+    /* 手动触发当前对象的失去焦点事件 */
+    lv_obj_send_event(lv_group_get_focused(group_main), LV_EVENT_DEFOCUSED, lv_group_get_focused(group_main));
+
+    /* 暂停并复位编辑模式超时退出定时器 */
+    lv_timer_pause(timer_edit_timeout);
+    lv_timer_reset(timer_edit_timeout);
 
     /* 获取参数 */
     pParamObj->relayOnObj.time  = lv_spinbox_get_value(guider_ui.screen_main.spinbox_time_on);
@@ -73,10 +84,10 @@ static void param_update(void)
 */
 static void loop_timer_cb(lv_timer_t * t)
 {
-    static bool     last_edit      = false;                 /* 上次编辑状态 */
-    static KEY_TYPE key_type_last  = KEY_TYPE_NULL;         /* 上次按键类型 */
-    KEY_TYPE        key_type       = Key_GetType();         /* 当前按键类型 */
-    lv_obj_t       *obj            = NULL;                  /* 当前对象 */
+    static bool last_edit = false;                  /* 上次编辑状态 */
+    static bool last_run  = false;                  /* 上次运行状态 */
+    KEY_TYPE    key_type  = Key_GetType();          /* 当前按键类型 */
+    lv_obj_t    *obj      = NULL;                   /* 当前对象 */
 
     /* 区分按键类型 */
     switch (key_type)
@@ -86,19 +97,24 @@ static void loop_timer_cb(lv_timer_t * t)
 
         /* ENTER */
         case KEY_TYPE_ENTER:
-            /* 编辑模式逻辑 */
+            /* 编辑模式更改逻辑 */
+
+            /* 长按进入编辑模式 */
             if (false == State_GetEdit())
             {
                 if (3000 <= Key_GetPressedTime())
                 {
                     State_SetEdit(true);
+
+                    /* 恢复定时器（编辑模式超时退出） */
+                    lv_timer_resume(timer_edit_timeout);
                 }
             }
 
-            /* 是否变更状态了 */
+            /* 进入or退出编辑模式单独处理 */
             if (last_edit != State_GetEdit())
             {
-                /* 正在编辑 */
+                /* 进入编辑 */
                 if (true == State_GetEdit())
                 {
                     /* 手动触发首个对象的焦点事件 */
@@ -107,22 +123,24 @@ static void loop_timer_cb(lv_timer_t * t)
                 /* 退出编辑 */
                 else
                 {
-                    /* 手动触发当前对象的失去焦点事件 */
-                    lv_obj_send_event(lv_group_get_focused(group_main), LV_EVENT_DEFOCUSED, lv_group_get_focused(group_main));
-
-                    /* 更新参数 */
-                    param_update();
+                    /* 手动触发编辑超时退出回调 */
+                    edit_quit_time_cb(NULL);
                 }
+
+                /* 更新编辑状态 */
+                last_edit = State_GetEdit();
             }
 
-            /* 更新状态 */
-            last_edit = State_GetEdit();
+            /* 复位编辑模式超时退出定时器 */
+            lv_timer_reset(timer_edit_timeout);
             break;
 
         /* UP & DOWN */
         case KEY_TYPE_UP:
         case KEY_TYPE_DOWN:
             /* 自适应步进逻辑 */
+
+            /* 必须处于编辑模式 */
             if (true == State_GetEdit())
             {
                 /* 获取聚焦对象 */
@@ -167,11 +185,24 @@ static void loop_timer_cb(lv_timer_t * t)
                     }
                 }
             }
+
+            /* 复位编辑模式超时退出定时器 */
+            lv_timer_reset(timer_edit_timeout);
             break;
     }
+    /**************** 运行状态 ****************/
 
-    /* 保存按键类型 */
-    key_type_last = key_type;
+    /* 是否发生变化 */
+    if (last_run != State_GetRun())
+    {
+        /* 设置文本 */
+        lv_label_set_text(guider_ui.screen_main.label_state, (State_GetRun() ? "RUN" : "STOP"));
+        /* 设置背景颜色 */
+        lv_obj_set_style_bg_color(guider_ui.screen_main.label_state, (State_GetRun() ? lv_color_hex(0x00FF00) : lv_color_hex(0xFF0000)), LV_PART_MAIN);
+
+        /* 更新运行状态 */
+        last_run = State_GetRun();
+    }
 }
 
 /**
@@ -441,25 +472,25 @@ void custom_init(gg_ui_t *ui)
 
     /* 创建变量 */
     group_main          = lv_group_create();
-    timer_loop          = lv_timer_create(loop_timer_cb,      20, NULL);
-    timer_spinbox_blink = lv_timer_create(spinbox_timer_cb,  500, NULL);
-    timer_roller_blink  = lv_timer_create(roller_timer_cb,   500, NULL);
+    timer_loop          = lv_timer_create(loop_timer_cb,        20, NULL);
+    timer_spinbox_blink = lv_timer_create(spinbox_timer_cb,    500, NULL);
+    timer_roller_blink  = lv_timer_create(roller_timer_cb,     500, NULL);
+    timer_edit_timeout  = lv_timer_create(edit_quit_time_cb, 10000, NULL);
 
     if ((NULL == ui                 )
      || (NULL == group_main         )
      || (NULL == timer_loop         )
      || (NULL == timer_spinbox_blink)
-     || (NULL == timer_roller_blink ))
+     || (NULL == timer_roller_blink )
+     || (NULL == timer_edit_timeout ))
     {
         return;
     }
 
-    /* LED显示绿色 */
-    lv_led_set_color(guider_ui.screen_main.led_state, lv_color_hex(0x00FF00));
-
     /* 暂停定时器 */
     lv_timer_pause(timer_spinbox_blink);
     lv_timer_pause(timer_roller_blink);
+    lv_timer_pause(timer_edit_timeout);
 
     /* 将组绑定到输入设备 */
     lv_indev_set_group(indev_keypad, group_main);

@@ -16,8 +16,8 @@
  * code is regenerated.
  *
  * Tool            : GUI Guider
- * Version         : 2.0.0
- * Generated on    : 2026/7/14
+ * Version         : 2.0.1
+ * Generated on    : 2026/11/15
  * ------------------------------------------------------------------------------
  */
 
@@ -41,14 +41,9 @@ static void gg_screen_deleted_cb(lv_event_t * e)
     *scr_ptr = NULL;
 }
 
-void gg_load_screen_animation(gg_ui_t * ui, const gg_screen_load_cfg_t * cfg)
+static void gg_load_screen_async(void * p)
 {
-    if(*cfg->scr == NULL) {
-        cfg->setup_fn(ui);
-        if(*cfg->scr == NULL) {
-            return;
-        }
-    }
+    gg_screen_load_cfg_t * cfg = p;
     if(cfg->auto_del) {
         lv_obj_t * old_scr = lv_screen_active();
         lv_obj_t ** old_scr_ptr = lv_obj_get_user_data(old_scr);
@@ -57,4 +52,22 @@ void gg_load_screen_animation(gg_ui_t * ui, const gg_screen_load_cfg_t * cfg)
         }
     }
     lv_screen_load_anim(*cfg->scr, cfg->anim_type, cfg->time, cfg->delay, cfg->auto_del);
+    lv_free(cfg);
+}
+
+void gg_load_screen_animation(gg_ui_t * ui, const gg_screen_load_cfg_t * cfg)
+{
+    if(*cfg->scr == NULL) {
+        cfg->setup_fn(ui);
+        if(*cfg->scr == NULL) {
+            return;
+        }
+    }
+
+    gg_screen_load_cfg_t * heap_cfg = lv_malloc(sizeof(*heap_cfg));
+    if(heap_cfg == NULL) {
+        return;
+    }
+    *heap_cfg = *cfg;
+    lv_async_call(gg_load_screen_async, heap_cfg);
 }

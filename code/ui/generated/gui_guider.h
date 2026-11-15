@@ -16,8 +16,8 @@
  * code is regenerated.
  *
  * Tool            : GUI Guider
- * Version         : 2.0.0
- * Generated on    : 2026/7/14
+ * Version         : 2.0.1
+ * Generated on    : 2026/11/15
  * ------------------------------------------------------------------------------
  */
 
@@ -32,15 +32,15 @@ extern "C" {
 #include "assets/images/gg_image.h"
 
 typedef struct {
-
+    lv_obj_t * layer;
 } gg_layer_sys_t;
 
 typedef struct {
-
+    lv_obj_t * layer;
 } gg_layer_top_t;
 
 typedef struct {
-
+    lv_obj_t * layer;
 } gg_layer_bottom_t;
 
 typedef struct {
@@ -50,16 +50,14 @@ typedef struct {
 
 typedef struct {
     lv_obj_t * screen;
-    lv_obj_t * led_state;
-    lv_obj_t * label_state_relay;
-    lv_obj_t * label_state_run;
-    lv_obj_t * spinbox_time_off;
+    lv_obj_t * label_state;
     lv_obj_t * spinbox_time_on;
+    lv_obj_t * spinbox_time_off;
     lv_obj_t * roller_time_on_unit;
     lv_obj_t * roller_time_off_unit;
-    lv_obj_t * label_main;
-    lv_obj_t * line_x;
-    lv_obj_t * line_y;
+    lv_obj_t * line_x_0;
+    lv_obj_t * line_x_1;
+    lv_obj_t * label_main_bg;
     lv_obj_t * label_time_on_bg;
     lv_obj_t * label_time_off_bg;
 } gg_screen_main_t;

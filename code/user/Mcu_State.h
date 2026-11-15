@@ -23,7 +23,8 @@
 *****************************************************/
 typedef struct _STATE_OBJECT_
 {
-    BOOL bEdit;
+    BOOL bEdit;             /* 编辑模式 */
+    BOOL bRun;              /* 运行状态 */
 } STATE_OBJECT;
 
 /****************************************************
@@ -42,12 +43,36 @@ typedef struct _STATE_OBJECT_
 BOOL State_GetEdit(void);
 
 /**
-  * @brief 设置编辑模式状态
-  * @param[in]   void
+  * @brief 设置编辑模式
+  * @param[in]   bState     编辑模式状态
   * @param[out]  void
   * @return void
 */
 void State_SetEdit(BOOL bState);
+
+/**
+  * @brief 获取运行状态
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+BOOL State_GetRun(void);
+
+/**
+  * @brief 设置运行状态
+  * @param[in]   bRun       运行状态
+  * @param[out]  void
+  * @return void
+*/
+void State_SetRun(BOOL bRun);
+
+/**
+  * @brief 状态轮询函数
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+void State_Loop(void);
 
 /****************************************************
                        函数定义

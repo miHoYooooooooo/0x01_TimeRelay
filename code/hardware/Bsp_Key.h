@@ -20,6 +20,7 @@
 #define     BSP_KEY_UP_PIN              (15U)
 #define     BSP_KEY_DOWN_PIN            (16U)
 #define     BSP_KEY_ENTER_PIN           (17U)
+#define     BSP_KEY_RUN_PIN             (18U)
 
 /****************************************************
                       结构体定义
@@ -32,6 +33,7 @@ typedef enum _KEY_TYPE_
     KEY_TYPE_UP     = 1,
     KEY_TYPE_DOWN   = 2,
     KEY_TYPE_ENTER  = 3,
+    KEY_TYPE_RUN    = 4,
 
     KEY_TYPE_MAX_   = 0xFFFFFFFF
 } KEY_TYPE;
@@ -88,6 +90,14 @@ KEY_TYPE Key_GetTypeImmediately(void);
   * @return 按键类型
 */
 KEY_TYPE Key_GetType(void);
+
+/**
+  * @brief 清空按键类型
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+void Key_ClearType(void);
 
 /**
   * @brief 获取按下的持续时间

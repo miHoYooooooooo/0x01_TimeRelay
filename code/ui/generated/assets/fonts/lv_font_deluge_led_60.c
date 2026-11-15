@@ -8,8 +8,8 @@
  * ------------------------------------------------------------
  * Conversion Tool : GUI Guider
  * Vendor          : NXP Semiconductors
- * Version         : 2.0.0
- * Generated on    : 2026/7/14
+ * Version         : 2.0.1
+ * Generated on    : 2026/11/15
  * Purpose         : Convert font file into C source code for embedded GUI usage.
  *
  * Disclaimer:
@@ -3669,7 +3669,7 @@ static lv_font_fmt_txt_dsc_t font_dsc = {
     .stride = 16
 };
 
-extern const lv_font_t lv_font_montserrat_14;
+extern const lv_font_t lv_font_montserrat_14_aligned;
 
 
 /*-----------------
@@ -3700,7 +3700,7 @@ lv_font_t lv_font_deluge_led_60 = {
 
     .dsc = &font_dsc,          /*The custom font data. Will be accessed by `get_glyph_bitmap/dsc` */
 #if LV_VERSION_CHECK(8, 2, 0) || LVGL_VERSION_MAJOR >= 9
-    .fallback = &lv_font_montserrat_14,
+    .fallback = &lv_font_montserrat_14_aligned,
 #endif
     .user_data = NULL,
 };

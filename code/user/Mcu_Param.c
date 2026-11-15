@@ -10,6 +10,7 @@
                         头文件
 *****************************************************/
 #include "Mcu_Param.h"
+#include <string.h>
 #include "Mcu_Public.h"
 
 /****************************************************
@@ -24,7 +25,8 @@
                        全局变量
 *****************************************************/
 /* 参数对象 */
-static PARAM_OBJECT paramObj = {0};
+static PARAM_OBJECT paramObj     = {0};
+static PARAM_OBJECT paramObjBack = {0};             /* 备份 */
 
 /****************************************************
                        函数声明
@@ -52,6 +54,12 @@ PARAM_OBJECT *Param_GetObj(void)
 */
 void Param_Update(void)
 {
+    /* 防止没修改参数就写Flash */
+    if (0 == memcmp(&paramObjBack, &paramObj, sizeof(PARAM_OBJECT)))
+    {
+        return;
+    }
+
     /* 更新校验和 */
     paramObj.checkSum = CheckSumU32((UINT8 *)&paramObj, sizeof(PARAM_OBJECT) - 4);
 
@@ -59,6 +67,9 @@ void Param_Update(void)
     Flash_Erase(MCU_PARAM_ADDR, MCU_PARAM_LEN);
     /* 写入Flash */
     Flash_Write(MCU_PARAM_ADDR, (UINT8 *)&paramObj, sizeof(PARAM_OBJECT));
+
+    /* 更新备份参数 */
+    paramObjBack = paramObj;
 }
 
 /**
@@ -89,4 +100,7 @@ void Param_Init(void)
         /* 写入 */
         Param_Update();
     }
+
+    /* 存储当前参数作为备份 */
+    paramObjBack = paramObj;
 }

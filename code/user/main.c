@@ -20,6 +20,7 @@
 #include "Bsp_Clock.h"
 #include "Bsp_Led.h"
 #include "Bsp_SysTick.h"
+#include "Mcu_State.h"
 #include "Mcu_Param.h"
 
 /****************************************************
@@ -107,5 +108,8 @@ int main(void)
     #if  !PICO_USE_MULTICORE
         lv_timer_handler();
     #endif
+
+        /* ×´Ì¬ÂÖÑ¯º¯Êý */
+        State_Loop();
     }
 }

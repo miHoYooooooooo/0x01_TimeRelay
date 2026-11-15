@@ -10,6 +10,7 @@
                         头文件
 *****************************************************/
 #include "Mcu_State.h"
+#include "Bsp_Key.h"
 
 /****************************************************
                         宏定义
@@ -43,12 +44,52 @@ BOOL State_GetEdit(void)
 }
 
 /**
-  * @brief 设置编辑模式状态
-  * @param[in]   void
+  * @brief 设置编辑模式
+  * @param[in]   bState     编辑模式状态
   * @param[out]  void
   * @return void
 */
 void State_SetEdit(BOOL bState)
 {
     stateObj.bEdit = bState;
+}
+
+/**
+  * @brief 获取运行状态
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+BOOL State_GetRun(void)
+{
+    return stateObj.bRun;
+}
+
+/**
+  * @brief 设置运行状态
+  * @param[in]   bRun       运行状态
+  * @param[out]  void
+  * @return void
+*/
+void State_SetRun(BOOL bRun)
+{
+    stateObj.bRun = bRun;
+}
+
+/**
+  * @brief 状态轮询函数
+  * @param[in]   void
+  * @param[out]  void
+  * @return void
+*/
+void State_Loop(void)
+{
+    if (KEY_TYPE_RUN == Key_GetType())
+    {
+        /* 运行状态切换 */
+        State_SetRun(!State_GetRun());
+
+        /* 清空按键，防止一直按住 */
+        Key_ClearType();
+    }
 }
