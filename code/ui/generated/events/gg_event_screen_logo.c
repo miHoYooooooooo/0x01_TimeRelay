@@ -24,8 +24,6 @@
 #include "gg_event.h"
 #include "custom.h"
 
-static lv_anim_t anim;
-
 static void screen_event_handler(lv_event_t * e)
 {
     gg_ui_t * ui = lv_event_get_user_data(e);
@@ -34,18 +32,6 @@ static void screen_event_handler(lv_event_t * e)
 
     switch(code) {
         case LV_EVENT_SCREEN_LOADED: {
-            lv_anim_init(&anim);
-            lv_anim_set_duration(&anim, 1000);
-            lv_anim_set_delay(&anim, 0);
-            lv_anim_set_path_cb(&anim, lv_anim_path_linear);
-            lv_anim_set_repeat_count(&anim, 0);
-            lv_anim_set_repeat_delay(&anim, 0);
-            lv_anim_set_var(&anim, ui->screen_logo.image_github);
-
-            lv_anim_set_exec_cb(&anim, anim_opa_cb);
-            lv_anim_set_values(&anim, 0, 255);
-            lv_anim_start(&anim);
-
             gg_screen_load_cfg_t cfg = {
                 .scr       = &ui->screen_main.screen,
                 .setup_fn  = setup_screen_main,

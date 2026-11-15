@@ -43,28 +43,67 @@ static lv_timer_t *timer_loop          = NULL;      /* 循环执行 */
 static lv_timer_t *timer_spinbox_blink = NULL;      /* Spinbox文字闪烁 */
 static lv_timer_t *timer_roller_blink  = NULL;      /* Roller 文字闪烁 */
 static lv_timer_t *timer_edit_timeout  = NULL;      /* 编辑超时 */
+/* 动画 */
+static lv_anim_t   anim_arc_edit       = {0};       /* 编辑圆弧动画 */
 
 /**********************
  *      FUNCTION
  **********************/
 /**
-  * @brief 编辑模式
-  * @param[in]   t      定时器指针
+  * @brief 进入编辑模式
+  * @param[in]   void
   * @param[out]  void
   * @return void
 */
-static void edit_quit_time_cb(lv_timer_t * t)
+static void edit_mode_enter(void)
+{
+    /* 同步编辑模式状态 */
+    State_SetEdit(true);
+
+    /* 手动触发首个对象的焦点事件 */
+    lv_group_focus_obj(lv_group_get_obj_by_index(group_main, 0));
+
+    /* 恢复定时器（启动编辑模式超时退出） */
+    lv_timer_reset (timer_edit_timeout);
+    lv_timer_resume(timer_edit_timeout);
+
+    /* 跟随编辑模式自动退出定时器来显示剩余操作时间 */
+    lv_arc_set_max_value(guider_ui.screen_main.arc_edit, MCU_PARAM_KEY_EDIT_QUIT_TIME);
+    lv_arc_set_value    (guider_ui.screen_main.arc_edit, MCU_PARAM_KEY_EDIT_QUIT_TIME);
+    lv_anim_set_values  (&anim_arc_edit, MCU_PARAM_KEY_EDIT_QUIT_TIME, 0);
+    lv_anim_set_duration(&anim_arc_edit, MCU_PARAM_KEY_EDIT_QUIT_TIME);
+    lv_anim_start       (&anim_arc_edit);
+}
+
+/**
+  * @brief 退出编辑模式
+  * @param[in]   bAuto  自动退出标志位
+  * @param[out]  void
+  * @return void
+*/
+static void edit_mode_exit(bool bAuto)
 {
     PARAM_OBJECT *pParamObj = Param_GetObj();
 
-    State_SetEdit(FALSE);
+    /* 同步编辑模式状态 */
+    State_SetEdit(false);
+
+    /* 防止没松开按键就又进入编辑模式了 */
+    Key_ClearType();
 
     /* 手动触发当前对象的失去焦点事件 */
     lv_obj_send_event(lv_group_get_focused(group_main), LV_EVENT_DEFOCUSED, lv_group_get_focused(group_main));
 
-    /* 暂停并复位编辑模式超时退出定时器 */
+    /* 暂停编辑模式超时退出定时器 */
     lv_timer_pause(timer_edit_timeout);
-    lv_timer_reset(timer_edit_timeout);
+
+    /* 退出分两种：一种是超时退出，一种是手动退出 */
+    /* 手动退出需要同步圆弧进度 */
+    if (false == bAuto)
+    {
+        lv_anim_set_values  (&anim_arc_edit, lv_arc_get_value(guider_ui.screen_main.arc_edit), 0);      /* 这里必须重新设置开始值，否则重置动画时会变为满量程 */
+        lv_anim_set_duration(&anim_arc_edit, 100);
+    }
 
     /* 获取参数 */
     pParamObj->relayOnObj.time  = lv_spinbox_get_value(guider_ui.screen_main.spinbox_time_on);
@@ -77,14 +116,25 @@ static void edit_quit_time_cb(lv_timer_t * t)
 }
 
 /**
+  * @brief 编辑模式超时定时器回调
+  * @param[in]   t      定时器指针
+  * @param[out]  void
+  * @return void
+*/
+static void edit_timeout_timer_cb(lv_timer_t * t)
+{
+    /* 超时自动退出编辑模式 */
+    edit_mode_exit(true);
+}
+
+/**
   * @brief 循环处理回调
-  * @param[in]   void
+  * @param[in]   t      定时器指针
   * @param[out]  void
   * @return void
 */
 static void loop_timer_cb(lv_timer_t * t)
 {
-    static bool last_edit = false;                  /* 上次编辑状态 */
     static bool last_run  = false;                  /* 上次运行状态 */
     KEY_TYPE    key_type  = Key_GetType();          /* 当前按键类型 */
     lv_obj_t    *obj      = NULL;                   /* 当前对象 */
@@ -95,44 +145,42 @@ static void loop_timer_cb(lv_timer_t * t)
         default:
             break;
 
+        /* NULL */
+        case KEY_TYPE_NULL:
+            /* 非编辑模式 */
+            if (false == State_GetEdit())
+            {
+                /* 如果当前编辑进度圆弧有值，则代表还没有进入编辑模式就松开了 */
+                if (0 != lv_arc_get_value(guider_ui.screen_main.arc_edit))
+                {
+                    /* 开启进度倒退动画 */
+                    lv_anim_set_values  (&anim_arc_edit, lv_arc_get_value(guider_ui.screen_main.arc_edit), 0);
+                    lv_anim_set_duration(&anim_arc_edit, 100);
+                    lv_anim_start(&anim_arc_edit);
+                }
+            }
+            break;
+
         /* ENTER */
         case KEY_TYPE_ENTER:
             /* 编辑模式更改逻辑 */
 
-            /* 长按进入编辑模式 */
+            /* 不处于编辑模式 */
             if (false == State_GetEdit())
             {
-                if (3000 <= Key_GetPressedTime())
+                /* 是否持续按下超过目标时间 */
+                if (MCU_PARAM_KEY_EDIT_ENTER_TIME <= Key_GetPressedTime())
                 {
-                    State_SetEdit(true);
-
-                    /* 恢复定时器（编辑模式超时退出） */
-                    lv_timer_resume(timer_edit_timeout);
+                    /* 进入编辑模式 */
+                    edit_mode_enter();
                 }
-            }
-
-            /* 进入or退出编辑模式单独处理 */
-            if (last_edit != State_GetEdit())
-            {
-                /* 进入编辑 */
-                if (true == State_GetEdit())
-                {
-                    /* 手动触发首个对象的焦点事件 */
-                    lv_group_focus_obj(lv_group_get_obj_by_index(group_main, 0));
-                }
-                /* 退出编辑 */
                 else
                 {
-                    /* 手动触发编辑超时退出回调 */
-                    edit_quit_time_cb(NULL);
+                    /* 同步进入编辑模式进度值 */
+                    lv_arc_set_max_value(guider_ui.screen_main.arc_edit, MCU_PARAM_KEY_EDIT_ENTER_TIME);
+                    lv_arc_set_value(guider_ui.screen_main.arc_edit, Key_GetPressedTime());
                 }
-
-                /* 更新编辑状态 */
-                last_edit = State_GetEdit();
             }
-
-            /* 复位编辑模式超时退出定时器 */
-            lv_timer_reset(timer_edit_timeout);
             break;
 
         /* UP & DOWN */
@@ -190,6 +238,7 @@ static void loop_timer_cb(lv_timer_t * t)
             lv_timer_reset(timer_edit_timeout);
             break;
     }
+
     /**************** 运行状态 ****************/
 
     /* 是否发生变化 */
@@ -202,6 +251,46 @@ static void loop_timer_cb(lv_timer_t * t)
 
         /* 更新运行状态 */
         last_run = State_GetRun();
+    }
+}
+
+/**
+  * @brief 重置动画
+  * @param[in]   a      动画对象
+  * @param[out]  void
+  * @return void
+*/
+void anim_restart(lv_anim_t * a)
+{
+    lv_anim_t anim = *a;
+
+    /* 删除 */
+    lv_anim_delete(a, NULL);
+
+    /* 重新初始化 */
+    lv_anim_init        (a);
+    lv_anim_set_var     (a, anim.var);
+    lv_anim_set_exec_cb (a, anim.exec_cb);
+    lv_anim_set_values  (a, anim.start_value, anim.end_value);
+    lv_anim_set_duration(a, anim.duration);
+    lv_anim_set_repeat_count(a, anim.repeat_cnt);
+    lv_anim_set_repeat_delay(a, anim.repeat_delay);
+    lv_anim_start(a);
+}
+
+/**
+  * @brief Arc动画回调
+  * @param[in]   obj    对象
+  * @param[in]   v      值
+  * @param[out]  void
+  * @return void
+*/
+static void arc_anim_cb(void * obj, int32_t v)
+{
+    if (obj == guider_ui.screen_main.arc_edit)
+    {
+        /* 设置数值 */
+        lv_arc_set_value(obj, v);
     }
 }
 
@@ -301,10 +390,17 @@ static void spinbox_event_cb(lv_event_t * e)
                         lv_spinbox_set_cursor_pos(obj, 0);
                         /* 复原长按间隔 */
                         lv_indev_set_long_press_repeat_time(indev_keypad, 100);
-                        /* 复用为切换对象 */
+
+                        /* 切换到下一个对象 */
                         lv_group_focus_next(group_main);
                         break;
                 }
+
+                /* 重置动画 */
+                anim_restart(&anim_arc_edit);
+
+                /* 复位编辑模式超时退出定时器 */
+                lv_timer_reset(timer_edit_timeout);
             }
             break;
 
@@ -315,9 +411,8 @@ static void spinbox_event_cb(lv_event_t * e)
             {
                 /* 更新定时器（闪烁）的用户数据 */
                 lv_timer_set_user_data(timer_spinbox_blink, obj);
-                /* 复位定时器（闪烁） */
-                lv_timer_reset(timer_spinbox_blink);
                 /* 恢复定时器（闪烁） */
+                lv_timer_reset (timer_spinbox_blink);
                 lv_timer_resume(timer_spinbox_blink);
                 /* 强制隐藏文字 */
                 lv_obj_set_style_text_opa(obj, LV_OPA_TRANSP, LV_PART_MAIN);
@@ -326,7 +421,7 @@ static void spinbox_event_cb(lv_event_t * e)
 
         /* 失去焦点事件 */
         case LV_EVENT_DEFOCUSED:
-            /* 暂停定时器（闪烁） */
+            /* 暂停并复位定时器（闪烁） */
             lv_timer_pause(timer_spinbox_blink);
             /* 强制显示文字 */
             lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_MAIN);
@@ -423,16 +518,22 @@ static void roller_event_cb(lv_event_t * e)
                         /* 当前是最后一个对象 */
                         if ((lv_group_get_obj_by_index(group_main, (lv_group_get_obj_count(group_main) - 1))) == obj)
                         {
-                            /* 所有对象设置完毕，退出编辑模式 */
-                            State_SetEdit(false);
+                            /* 所有对象设置完毕，手动退出编辑模式 */
+                            edit_mode_exit(false);
                         }
                         else
                         {
-                            /* 复用为切换对象 */
+                            /* 切换到下一个对象 */
                             lv_group_focus_next(group_main);
                         }
                         break;
                 }
+
+                /* 重置动画 */
+                anim_restart(&anim_arc_edit);
+
+                /* 复位编辑模式超时退出定时器 */
+                lv_timer_reset(timer_edit_timeout);
             }
             break;
 
@@ -443,9 +544,8 @@ static void roller_event_cb(lv_event_t * e)
             {
                 /* 更新定时器（闪烁）的用户数据 */
                 lv_timer_set_user_data(timer_roller_blink, obj);
-                /* 复位定时器（闪烁） */
-                lv_timer_reset(timer_roller_blink);
                 /* 恢复定时器（闪烁） */
+                lv_timer_reset (timer_roller_blink);
                 lv_timer_resume(timer_roller_blink);
                 /* 强制隐藏文字 */
                 lv_obj_set_style_text_opa(obj, LV_OPA_TRANSP, LV_PART_SELECTED);
@@ -454,7 +554,7 @@ static void roller_event_cb(lv_event_t * e)
 
         /* 失去焦点事件 */
         case LV_EVENT_DEFOCUSED:
-            /* 暂停定时器（闪烁） */
+            /* 暂停并复位定时器（闪烁） */
             lv_timer_pause(timer_roller_blink);
             /* 强制显示文字 */
             lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_SELECTED);
@@ -472,10 +572,10 @@ void custom_init(gg_ui_t *ui)
 
     /* 创建变量 */
     group_main          = lv_group_create();
-    timer_loop          = lv_timer_create(loop_timer_cb,        20, NULL);
-    timer_spinbox_blink = lv_timer_create(spinbox_timer_cb,    500, NULL);
-    timer_roller_blink  = lv_timer_create(roller_timer_cb,     500, NULL);
-    timer_edit_timeout  = lv_timer_create(edit_quit_time_cb, 10000, NULL);
+    timer_loop          = lv_timer_create(loop_timer_cb,          20, NULL);
+    timer_spinbox_blink = lv_timer_create(spinbox_timer_cb,      500, NULL);
+    timer_roller_blink  = lv_timer_create(roller_timer_cb,       500, NULL);
+    timer_edit_timeout  = lv_timer_create(edit_timeout_timer_cb, MCU_PARAM_KEY_EDIT_QUIT_TIME, NULL);
 
     if ((NULL == ui                 )
      || (NULL == group_main         )
@@ -487,7 +587,7 @@ void custom_init(gg_ui_t *ui)
         return;
     }
 
-    /* 暂停定时器 */
+    /* 暂停并复位定时器 */
     lv_timer_pause(timer_spinbox_blink);
     lv_timer_pause(timer_roller_blink);
     lv_timer_pause(timer_edit_timeout);
@@ -500,6 +600,14 @@ void custom_init(gg_ui_t *ui)
     lv_group_add_obj(group_main, guider_ui.screen_main.roller_time_on_unit);
     lv_group_add_obj(group_main, guider_ui.screen_main.spinbox_time_off);
     lv_group_add_obj(group_main, guider_ui.screen_main.roller_time_off_unit);
+
+    /* 动画 */
+    lv_anim_init        (&anim_arc_edit);
+    lv_anim_set_var     (&anim_arc_edit, guider_ui.screen_main.arc_edit);
+    lv_anim_set_exec_cb (&anim_arc_edit, arc_anim_cb);
+    lv_anim_set_duration(&anim_arc_edit, 100);
+    lv_anim_set_repeat_count(&anim_arc_edit, 0);    /* 不重复 */
+    lv_anim_set_repeat_delay(&anim_arc_edit, 0);
 
     /* Spinbox */
     lv_obj_add_event_cb(guider_ui.screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_KEY,           guider_ui.screen_main.spinbox_time_on);

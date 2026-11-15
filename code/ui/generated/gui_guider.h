@@ -50,6 +50,7 @@ typedef struct {
 
 typedef struct {
     lv_obj_t * screen;
+    lv_obj_t * arc_edit;
     lv_obj_t * label_state;
     lv_obj_t * spinbox_time_on;
     lv_obj_t * spinbox_time_off;
