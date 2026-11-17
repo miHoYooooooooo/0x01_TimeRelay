@@ -23,14 +23,18 @@
 #define     MCU_PARAM_LEN                           (BSP_FLASH_SECTOR_SIZE)     /* 0x1000 = 4096-Byte */
 
 /* 继电器 */
-#define     MCU_PARAM_RELAY_ON_TIME_DEFAULT         (  0U)
+#define     MCU_PARAM_RELAY_ON_TIME_DEFAULT         (  0U)                      /* 默认时间和单位 */
 #define     MCU_PARAM_RELAY_ON_UNIT_DEFAULT         (RELAY_UNIT_S)
 #define     MCU_PARAM_RELAY_OFF_TIME_DEFAULT        (  0U)
 #define     MCU_PARAM_RELAY_OFF_UNIT_DEFAULT        (RELAY_UNIT_S)
 
+
+/* UI  - 闪烁时间 */
+#define     MCU_PARAM_UI_SPINBOX_BLINK_TIME         (  500U)                    /* Spinbox闪烁时间 */
+#define     MCU_PARAM_UI_ROLLER_BLINK_TIME          (  500U)                    /* Roller 闪烁时间 */
 /* 按键 - 编辑模式 */
 #define     MCU_PARAM_KEY_EDIT_ENTER_TIME           ( 2000U)                    /* 进入时间 */
-#define     MCU_PARAM_KEY_EDIT_QUIT_TIME            (10000U)                    /* 自动退出时间 */
+#define     MCU_PARAM_KEY_EDIT_AUTO_EXIT_TIME       (10000U)                    /* 自动退出时间 */
 
 /****************************************************
                       结构体定义

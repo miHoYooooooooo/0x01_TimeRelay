@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.1
- * Generated on    : 2026/11/15
+ * Generated on    : 2026/11/17
  * ------------------------------------------------------------------------------
  */
 
@@ -45,12 +45,7 @@ typedef struct {
 
 typedef struct {
     lv_obj_t * screen;
-    lv_obj_t * image_github;
-} gg_screen_logo_t;
-
-typedef struct {
-    lv_obj_t * screen;
-    lv_obj_t * arc_edit;
+    lv_obj_t * bar_setting;
     lv_obj_t * label_state;
     lv_obj_t * spinbox_time_on;
     lv_obj_t * spinbox_time_off;
@@ -67,7 +62,6 @@ typedef struct {
     gg_layer_sys_t layer_sys;
     gg_layer_top_t layer_top;
     gg_layer_bottom_t layer_bottom;
-    gg_screen_logo_t screen_logo;
     gg_screen_main_t screen_main;
 } gg_ui_t;
 
@@ -85,7 +79,6 @@ extern gg_ui_t guider_ui;
 void setup_layer_sys(gg_ui_t * ui);
 void setup_layer_top(gg_ui_t * ui);
 void setup_layer_bottom(gg_ui_t * ui);
-void setup_screen_logo(gg_ui_t * ui);
 void setup_screen_main(gg_ui_t * ui);
 
 #ifdef __cplusplus

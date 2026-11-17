@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.1
- * Generated on    : 2026/11/15
+ * Generated on    : 2026/11/17
  * ------------------------------------------------------------------------------
  */
 
@@ -250,7 +250,7 @@ void setup_screen_main(gg_ui_t * ui)
     lv_obj_set_height(ui->screen_main.label_state, 28);
     lv_obj_set_align(ui->screen_main.label_state, LV_ALIGN_TOP_LEFT);
     lv_obj_set_x(ui->screen_main.label_state, 155);
-    lv_obj_set_y(ui->screen_main.label_state, 10);
+    lv_obj_set_y(ui->screen_main.label_state, 11);
     lv_label_set_text(ui->screen_main.label_state, "STOP");
 
     // Style: ui->screen_main.label_state [LV_PART_MAIN|LV_STATE_DEFAULT]
@@ -265,30 +265,26 @@ void setup_screen_main(gg_ui_t * ui)
     lv_obj_set_style_pad_top(ui->screen_main.label_state, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->screen_main.label_state, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Create arc: ui->screen_main.arc_edit
-    ui->screen_main.arc_edit = lv_arc_create(ui->screen_main.screen);
-    lv_obj_set_width(ui->screen_main.arc_edit, 30);
-    lv_obj_set_height(ui->screen_main.arc_edit, 30);
-    lv_obj_set_align(ui->screen_main.arc_edit, LV_ALIGN_TOP_LEFT);
-    lv_obj_set_x(ui->screen_main.arc_edit, 15);
-    lv_obj_set_y(ui->screen_main.arc_edit, 10);
-    lv_arc_set_value(ui->screen_main.arc_edit, 0);
-    lv_arc_set_bg_angles(ui->screen_main.arc_edit, 30, 330);
-    lv_arc_set_rotation(ui->screen_main.arc_edit, 90);
-    lv_arc_set_range(ui->screen_main.arc_edit, 0, 3000);
+    // Create bar: ui->screen_main.bar_setting
+    ui->screen_main.bar_setting = lv_bar_create(ui->screen_main.screen);
+    lv_obj_set_width(ui->screen_main.bar_setting, 130);
+    lv_obj_set_height(ui->screen_main.bar_setting, 8);
+    lv_obj_set_align(ui->screen_main.bar_setting, LV_ALIGN_TOP_LEFT);
+    lv_obj_set_x(ui->screen_main.bar_setting, 15);
+    lv_obj_set_y(ui->screen_main.bar_setting, 22);
+    lv_bar_set_range(ui->screen_main.bar_setting, 0, 3000);
 
-    // Style: ui->screen_main.arc_edit [LV_PART_MAIN|LV_STATE_DEFAULT]
-    lv_obj_set_style_arc_width(ui->screen_main.arc_edit, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_rounded(ui->screen_main.arc_edit, false, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_color(ui->screen_main.arc_edit, lv_color_hex(0x292929), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Style: ui->screen_main.bar_setting [LV_PART_MAIN|LV_STATE_DEFAULT]
+    lv_obj_set_style_bg_color(ui->screen_main.bar_setting, lv_color_hex(0x292929), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_main.bar_setting, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->screen_main.bar_setting, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Style: ui->screen_main.arc_edit [LV_PART_INDICATOR|LV_STATE_DEFAULT]
-    lv_obj_set_style_arc_rounded(ui->screen_main.arc_edit, false, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_width(ui->screen_main.arc_edit, 5, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_color(ui->screen_main.arc_edit, lv_color_hex(0xffffff), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    // Style: ui->screen_main.bar_setting [LV_PART_INDICATOR|LV_STATE_DEFAULT]
+    lv_obj_set_style_bg_color(ui->screen_main.bar_setting, lv_color_hex(0xffffff), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_main.bar_setting, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
-    // Style: ui->screen_main.arc_edit [LV_PART_KNOB|LV_STATE_DEFAULT]
-    lv_obj_set_style_bg_opa(ui->screen_main.arc_edit, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
+    // ui->screen_main.bar_setting: attributes applied after styles
+    lv_bar_set_value(ui->screen_main.bar_setting, 0, LV_ANIM_OFF);
 
     // screen_main custom code
 
