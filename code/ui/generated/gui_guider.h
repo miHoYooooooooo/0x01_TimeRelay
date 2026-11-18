@@ -17,7 +17,7 @@
  *
  * Tool            : GUI Guider
  * Version         : 2.0.1
- * Generated on    : 2026/11/17
+ * Generated on    : 2026/11/18
  * ------------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ typedef struct {
 
 typedef struct {
     lv_obj_t * screen;
-    lv_obj_t * bar_setting;
+    lv_obj_t * bar_edit_progress;
     lv_obj_t * label_state;
     lv_obj_t * spinbox_time_on;
     lv_obj_t * spinbox_time_off;

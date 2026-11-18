@@ -25,6 +25,28 @@
 /**********************
  *      TYPEDEFS
  **********************/
+/* 动画类型枚举 */
+typedef enum _ANIM_TYPE_
+{
+    ANIM_TYPE_NULL            = 0,
+
+    ANIM_TYPE_BAR_FAST_REWIND = 1,              /* Bar快速回退动画：   快速从100到0 */
+    ANIM_TYPE_BAR_ENTER       = 2,              /* Bar进入动画：       慢速从0到100 */
+    ANIM_TYPE_BAR_AUTO_EXIT   = 3,              /* Bar超时自动退出动画：慢速从100到0 */
+    ANIM_TYPE_BAR_MANUAL_EXIT = 4,              /* Bar手动退出动画： 快速从当前值到0 */
+} ANIM_TYPE;
+
+/* 动画对象结构体 */
+typedef struct _ANIM_OBJECT_
+{
+    void * var;                     /* 动画对象 */
+    int32_t  start;                 /* 起始值   */
+    int32_t  end;                   /* 结束值   */
+    uint32_t duration;              /* 动画时长 */
+    uint32_t delay;                 /* 播放延时 */
+    uint32_t repeat_cnt;            /* 重复次数 */
+    uint32_t repeat_delay;          /* 重复延时 */
+} ANIM_OBJECT;
 
 /**********************
  *  STATIC PROTOTYPES
@@ -37,18 +59,135 @@
 /* 键盘 */
 extern lv_indev_t *indev_keypad;
 /* 组 */
-static lv_group_t *group_main          = NULL;
+static lv_group_t *group_main                  = NULL;
 /* 定时器 */
-static lv_timer_t *timer_loop           = NULL;     /* 循环执行 */
-static lv_timer_t *timer_spinbox_blink  = NULL;     /* Spinbox文字闪烁 */
-static lv_timer_t *timer_roller_blink   = NULL;     /* Roller 文字闪烁 */
-static lv_timer_t *timer_edit_auto_exit = NULL;     /* 编辑模式超时退出 */
+static lv_timer_t *timer_loop                  = NULL;              /* 循环执行 */
+static lv_timer_t *timer_spinbox_blink         = NULL;              /* Spinbox文字闪烁 */
+static lv_timer_t *timer_roller_blink          = NULL;              /* Roller 文字闪烁 */
+static lv_timer_t *timer_edit_auto_exit        = NULL;              /* 编辑模式超时退出 */
 /* 动画 */
-static lv_anim_t   anim_bar_setting    = {0};       /* 设置滑块条动画 */
+static lv_anim_t   anim_bar_edit_progress      = {0};               /* 编辑模式进度条动画 */
+static ANIM_TYPE   anim_bar_edit_progress_type = ANIM_TYPE_NULL;    /* 编辑模式进度条当前动画类型 */
 
 /**********************
  *      FUNCTION
  **********************/
+/**
+  * @brief 动画执行回调
+  * @param[in]   obj    对象
+  * @param[in]   v      值
+  * @param[out]  void
+  * @return void
+*/
+static void anim_exec_cb(void * obj, int32_t v)
+{
+    /* 编辑模式进度条 */
+    if (obj == guider_ui.screen_main.bar_edit_progress)
+    {
+        /* 设置数值 */
+        lv_bar_set_value(obj, v, LV_ANIM_ON);
+    }
+}
+
+/**
+  * @brief 动画完成回调
+  * @param[in]   a      对象
+  * @param[out]  void
+  * @return void
+*/
+static void anim_completed_cb(lv_anim_t * a)
+{
+    /* 清空对应控件当前动画类型 */
+    if (a->var == guider_ui.screen_main.bar_edit_progress)
+    {
+        anim_bar_edit_progress_type = ANIM_TYPE_NULL;
+    }
+}
+
+/**
+  * @brief 开始动画
+  * @param[in]   a              动画对象
+  * @param[in]   type           动画类型
+  * @param[out]  void
+  * @return void
+*/
+static void anim_start(lv_anim_t * a, ANIM_TYPE type)
+{
+    ANIM_OBJECT anim_obj = {0};
+
+    /* 编辑模式进度条 */
+    if (a == &anim_bar_edit_progress)
+    {
+        /* 根据动画类型区分 */
+        switch (type)
+        {
+            default:
+                break;
+
+            /* Bar快速回退动画：快速从当前值到0 */
+            case ANIM_TYPE_BAR_FAST_REWIND:
+            /* Bar手动退出动画： 快速从当前值到0 */
+            case ANIM_TYPE_BAR_MANUAL_EXIT:
+                /* 不允许自我打断 */
+                if (type == anim_bar_edit_progress_type)
+                {
+                    return;
+                }
+                anim_obj.var          = guider_ui.screen_main.bar_edit_progress;
+                anim_obj.start        = lv_bar_get_value(guider_ui.screen_main.bar_edit_progress);
+                anim_obj.end          = 0;
+                anim_obj.duration     = 150;
+                anim_obj.delay        = 10;
+                anim_obj.repeat_cnt   = 0;
+                anim_obj.repeat_delay = 0;
+                break;
+
+            /* Bar进入动画：慢速从0到100 */
+            case ANIM_TYPE_BAR_ENTER:
+                /* 不允许自我打断 */
+                if (type == anim_bar_edit_progress_type)
+                {
+                    return;
+                }
+                anim_obj.var          = guider_ui.screen_main.bar_edit_progress;
+                anim_obj.start        = 0;
+                anim_obj.end          = lv_bar_get_max_value(guider_ui.screen_main.bar_edit_progress);
+                anim_obj.duration     = MCU_PARAM_KEY_EDIT_ENTER_TIME;
+                anim_obj.delay        = 10;
+                anim_obj.repeat_cnt   = 0;
+                anim_obj.repeat_delay = 0;
+                break;
+
+            /* Bar超时自动退出动画：慢速从100到0 */
+            case ANIM_TYPE_BAR_AUTO_EXIT:
+                anim_obj.var          = guider_ui.screen_main.bar_edit_progress;
+                anim_obj.start        = lv_bar_get_max_value(guider_ui.screen_main.bar_edit_progress);
+                anim_obj.end          = 0;
+                anim_obj.duration     = MCU_PARAM_KEY_EDIT_AUTO_EXIT_TIME;
+                anim_obj.delay        = 100;        /* 这里的延时是为了长按调节时间时，进度条的连贯性 */
+                anim_obj.repeat_cnt   = 0;
+                anim_obj.repeat_delay = 0;
+                break;
+        }
+
+        /* 更新当前动画类型 */
+        anim_bar_edit_progress_type = type;
+    }
+
+    /* 配置 */
+    lv_anim_delete          (a, NULL);
+    lv_anim_init            (a);
+    lv_anim_set_var         (a, anim_obj.var);
+    lv_anim_set_exec_cb     (a, anim_exec_cb);
+    lv_anim_set_completed_cb(a, anim_completed_cb);
+    lv_anim_set_values      (a, anim_obj.start, anim_obj.end);
+    lv_anim_set_duration    (a, anim_obj.duration);
+    lv_anim_set_delay       (a, anim_obj.delay);
+    lv_anim_set_repeat_count(a, anim_obj.repeat_cnt);
+    lv_anim_set_repeat_delay(a, anim_obj.repeat_delay);
+    lv_anim_start(a);
+}
+
 /**
   * @brief 进入编辑模式
   * @param[in]   void
@@ -68,11 +207,7 @@ static void edit_mode_enter(void)
     lv_timer_resume(timer_edit_auto_exit);
 
     /* 跟随编辑模式自动退出定时器来显示剩余操作时间 */
-    lv_bar_set_max_value(guider_ui.screen_main.bar_setting, MCU_PARAM_KEY_EDIT_AUTO_EXIT_TIME);
-    lv_bar_set_value    (guider_ui.screen_main.bar_setting, MCU_PARAM_KEY_EDIT_AUTO_EXIT_TIME, LV_ANIM_ON);
-    lv_anim_set_values  (&anim_bar_setting, MCU_PARAM_KEY_EDIT_AUTO_EXIT_TIME, 0);
-    lv_anim_set_duration(&anim_bar_setting, MCU_PARAM_KEY_EDIT_AUTO_EXIT_TIME);
-    lv_anim_start       (&anim_bar_setting);
+    anim_start(&anim_bar_edit_progress, ANIM_TYPE_BAR_AUTO_EXIT);
 }
 
 /**
@@ -96,14 +231,6 @@ static void edit_mode_exit(bool bAuto)
 
     /* 暂停定时器（编辑模式超时退出） */
     lv_timer_pause(timer_edit_auto_exit);
-
-    /* 退出分两种：一种是超时退出，一种是手动退出 */
-    /* 手动退出需要回退进度 */
-    if (false == bAuto)
-    {
-        lv_anim_set_values  (&anim_bar_setting, lv_bar_get_value(guider_ui.screen_main.bar_setting), 0);        /* 这里必须重新设置开始值，否则重置动画时会变为满量程 */
-        lv_anim_set_duration(&anim_bar_setting, 100);
-    }
 
     /* 获取参数 */
     pParamObj->relayOnObj.time  = lv_spinbox_get_value(guider_ui.screen_main.spinbox_time_on);
@@ -135,9 +262,9 @@ static void edit_auto_exit_timer_cb(lv_timer_t * t)
 */
 static void loop_timer_cb(lv_timer_t * t)
 {
-    static bool last_run  = false;                  /* 上次运行状态 */
-    KEY_TYPE    key_type  = Key_GetType();          /* 当前按键类型 */
-    lv_obj_t    *obj      = NULL;                   /* 当前对象 */
+    static bool last_run  = false;                                  /* 上次运行状态 */
+    KEY_TYPE    key_type  = Key_GetType();                          /* 当前按键类型 */
+    lv_obj_t    *obj      = lv_group_get_focused(group_main);       /* 当前聚焦对象 */
 
     /* 区分按键类型 */
     switch (key_type)
@@ -150,13 +277,27 @@ static void loop_timer_cb(lv_timer_t * t)
             /* 非编辑模式 */
             if (false == State_GetEdit())
             {
-                /* 如果当前设置滑动条有值，则代表还没有进入编辑模式就松开了 */
-                if (0 != lv_bar_get_value(guider_ui.screen_main.bar_setting))
+                /* 如果当前编辑模式进度条有值，则代表还没有进入就松开按键了 */
+                if (0 != lv_bar_get_value(guider_ui.screen_main.bar_edit_progress))
                 {
-                    /* 开启进度倒退动画 */
-                    lv_anim_set_values  (&anim_bar_setting, lv_bar_get_value(guider_ui.screen_main.bar_setting), 0);
-                    lv_anim_set_duration(&anim_bar_setting, 100);
-                    lv_anim_start(&anim_bar_setting);
+                    /* 开启进度条快速回退动画 */
+                    anim_start(&anim_bar_edit_progress, ANIM_TYPE_BAR_FAST_REWIND);
+                }
+            }
+            /* 编辑模式 */
+            else
+            {
+                /* 当前聚焦对象为Spinbox */
+                if (true == lv_obj_check_type(obj, &lv_spinbox_class))
+                {
+                    /* 这里代表长按调整时间后松开，需要重置步长 */
+                    if (0 != lv_spinbox_get_step(obj))
+                    {
+                        /* 复原光标位置 */
+                        lv_spinbox_set_cursor_pos(obj, 0);
+                        /* 复原长按间隔 */
+                        lv_indev_set_long_press_repeat_time(indev_keypad, 100);
+                    }
                 }
             }
             break;
@@ -174,11 +315,11 @@ static void loop_timer_cb(lv_timer_t * t)
                     /* 进入编辑模式 */
                     edit_mode_enter();
                 }
+                /* 正在长按 */
                 else
                 {
-                    /* 跟随按键增加进度 */
-                    lv_bar_set_max_value(guider_ui.screen_main.bar_setting, MCU_PARAM_KEY_EDIT_ENTER_TIME);
-                    lv_bar_set_value    (guider_ui.screen_main.bar_setting, Key_GetPressedTime(), LV_ANIM_ON);
+                    /* 开启进度条进入动画 */
+                    anim_start(&anim_bar_edit_progress, ANIM_TYPE_BAR_ENTER);
                 }
             }
             break;
@@ -191,10 +332,7 @@ static void loop_timer_cb(lv_timer_t * t)
             /* 必须处于编辑模式 */
             if (true == State_GetEdit())
             {
-                /* 获取聚焦对象 */
-                obj = lv_group_get_focused(group_main);
-
-                /* 对象为Spinbox */
+                /* 当前聚焦对象为Spinbox */
                 if (true == lv_obj_check_type(obj, &lv_spinbox_class))
                 {
                     /* 只有持续按住才允许进位 */
@@ -213,6 +351,7 @@ static void loop_timer_cb(lv_timer_t * t)
                             lv_spinbox_step_prev(obj);
 
                             /* 根据进位调整长按间隔时间 */
+                            /* 十位快，百位慢 */
                             if (10 == lv_spinbox_get_step(obj))
                             {
                                 lv_indev_set_long_press_repeat_time(indev_keypad, 300);
@@ -222,14 +361,6 @@ static void loop_timer_cb(lv_timer_t * t)
                                 lv_indev_set_long_press_repeat_time(indev_keypad, 500);
                             }
                         }
-                    }
-                    /* 松开了 */
-                    else
-                    {
-                        /* 复原光标位置 */
-                        lv_spinbox_set_cursor_pos(obj, 0);
-                        /* 复原长按间隔 */
-                        lv_indev_set_long_press_repeat_time(indev_keypad, 100);
                     }
                 }
             }
@@ -251,46 +382,6 @@ static void loop_timer_cb(lv_timer_t * t)
 
         /* 更新运行状态 */
         last_run = State_GetRun();
-    }
-}
-
-/**
-  * @brief 重置动画
-  * @param[in]   a      动画对象
-  * @param[out]  void
-  * @return void
-*/
-void anim_restart(lv_anim_t * a)
-{
-    lv_anim_t anim = *a;
-
-    /* 删除 */
-    lv_anim_delete(a, NULL);
-
-    /* 重新初始化 */
-    lv_anim_init        (a);
-    lv_anim_set_var     (a, anim.var);
-    lv_anim_set_exec_cb (a, anim.exec_cb);
-    lv_anim_set_values  (a, anim.start_value, anim.end_value);
-    lv_anim_set_duration(a, anim.duration);
-    lv_anim_set_repeat_count(a, anim.repeat_cnt);
-    lv_anim_set_repeat_delay(a, anim.repeat_delay);
-    lv_anim_start(a);
-}
-
-/**
-  * @brief Bar动画回调
-  * @param[in]   obj    对象
-  * @param[in]   v      值
-  * @param[out]  void
-  * @return void
-*/
-static void bar_anim_cb(void * obj, int32_t v)
-{
-    if (obj == guider_ui.screen_main.bar_setting)
-    {
-        /* 设置数值 */
-        lv_bar_set_value(obj, v, LV_ANIM_ON);
     }
 }
 
@@ -382,6 +473,9 @@ static void spinbox_event_cb(lv_event_t * e)
                         lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_MAIN);
                         /* 一直复位着定时器（闪烁） */
                         lv_timer_reset(timer_spinbox_blink);
+
+                        /* 重置超时自动退出动画 */
+                        anim_start(&anim_bar_edit_progress, ANIM_TYPE_BAR_AUTO_EXIT);
                         break;
 
                     /* ENTER */
@@ -391,13 +485,13 @@ static void spinbox_event_cb(lv_event_t * e)
                         /* 复原长按间隔 */
                         lv_indev_set_long_press_repeat_time(indev_keypad, 100);
 
+                        /* 重置超时自动退出动画 */
+                        anim_start(&anim_bar_edit_progress, ANIM_TYPE_BAR_AUTO_EXIT);
+
                         /* 切换到下一个对象 */
                         lv_group_focus_next(group_main);
                         break;
                 }
-
-                /* 重置动画 */
-                anim_restart(&anim_bar_setting);
 
                 /* 复位定时器（编辑模式超时退出） */
                 lv_timer_reset(timer_edit_auto_exit);
@@ -409,6 +503,11 @@ static void spinbox_event_cb(lv_event_t * e)
             /* 非编辑模式不处理 */
             if (true == State_GetEdit())
             {
+                /* 复原光标位置 */
+                lv_spinbox_set_cursor_pos(obj, 0);
+                /* 复原长按间隔 */
+                lv_indev_set_long_press_repeat_time(indev_keypad, 100);             /* 这里是防止上次步进被修改 */
+
                 /* 更新定时器（闪烁）的用户数据 */
                 lv_timer_set_user_data(timer_spinbox_blink, obj);
                 /* 恢复定时器（闪烁） */
@@ -511,6 +610,9 @@ static void roller_event_cb(lv_event_t * e)
                         lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_SELECTED);
                         /* 一直复位着定时器（闪烁） */
                         lv_timer_reset(timer_roller_blink);
+
+                        /* 重置超时自动退出动画 */
+                        anim_start(&anim_bar_edit_progress, ANIM_TYPE_BAR_AUTO_EXIT);
                         break;
 
                         /* ENTER */
@@ -518,19 +620,22 @@ static void roller_event_cb(lv_event_t * e)
                         /* 当前是最后一个对象 */
                         if ((lv_group_get_obj_by_index(group_main, (lv_group_get_obj_count(group_main) - 1))) == obj)
                         {
+                            /* 这里不重置的原因是已经全部编辑完毕，需要进度条快速回退 */
+                            // anim_start(&anim_bar_edit_progress, ANIM_TYPE_BAR_AUTO_EXIT);
+
                             /* 所有对象设置完毕，手动退出编辑模式 */
                             edit_mode_exit(false);
                         }
                         else
                         {
+                            /* 重置超时自动退出动画 */
+                            anim_start(&anim_bar_edit_progress, ANIM_TYPE_BAR_AUTO_EXIT);
+
                             /* 切换到下一个对象 */
                             lv_group_focus_next(group_main);
                         }
                         break;
                 }
-
-                /* 重置动画 */
-                anim_restart(&anim_bar_setting);
 
                 /* 复位定时器（编辑模式超时退出） */
                 lv_timer_reset(timer_edit_auto_exit);
@@ -600,14 +705,6 @@ void custom_init(gg_ui_t *ui)
     lv_group_add_obj(group_main, guider_ui.screen_main.roller_time_on_unit);
     lv_group_add_obj(group_main, guider_ui.screen_main.spinbox_time_off);
     lv_group_add_obj(group_main, guider_ui.screen_main.roller_time_off_unit);
-
-    /* 动画 */
-    lv_anim_init        (&anim_bar_setting);
-    lv_anim_set_var     (&anim_bar_setting, guider_ui.screen_main.bar_setting);
-    lv_anim_set_exec_cb (&anim_bar_setting, bar_anim_cb);
-    lv_anim_set_duration(&anim_bar_setting, 100);
-    lv_anim_set_repeat_count(&anim_bar_setting, 0);    /* 不重复 */
-    lv_anim_set_repeat_delay(&anim_bar_setting, 0);
 
     /* Spinbox */
     lv_obj_add_event_cb(guider_ui.screen_main.spinbox_time_on,      spinbox_event_cb, LV_EVENT_KEY,           guider_ui.screen_main.spinbox_time_on);
